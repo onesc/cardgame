@@ -1,13 +1,40 @@
 <!DOCTYPE html>
 <html>
    <head>
-      <title>Hello world</title>
+      	<title>Hello world</title>
+      	 <script src = "/socket.io/socket.io.js"></script>
+   <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
    </head>
-   <script src = "/socket.io/socket.io.js"></script>
-   
+   <body>
+   		<div>Your HP is <span class = "yourhp hp"></span></div>
+   		   		<div>Your enemies HP is<span class = "enemyhp hp"></span></div>
+
+   		<div id = "hand"></div>
+   </body>
+  
    <script>
-      var socket = io();
-      socket.on('testerEvent', function(data){document.write(data.description)});
+     	var socket = io();
+
+      	socket.on('testerEvent', function(data){document.write(data.description)});
+    	socket.on('state', function(game){
+    		var me = game.players.find(function(p){ return p.id === socket.id});
+    		var opponent = game.players.find(function(p){ return p.id !== socket.id});
+
+    		console.log(game)
+    		$('.yourhp').text(me.hp)
+    		$('.enemyhp').text(opponent.hp)
+
+    		$('#hand').html($('<ul>')
+				.append(me.hand.map(card => $("<li>").text(card.name))));
+    	});
+
+    	var s = socket.emit
    </script>
-   <body>Hello world</body>
+
+   <style type="text/css">
+   		.hp {
+   			font-size: 30px;
+   			color: red;
+   		}
+   </style>
 </html>
