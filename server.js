@@ -10,21 +10,27 @@ app.get('/', function(req, res) {
 const game = new Game;
 
 io.on('connection', function(socket) {
-	game.addPlayer(socket.id)
-	console.log(game)
   	const emitGameState = () => {
   		io.sockets.emit('state', game);
   	}
 
 	emitGameState();
+
+	socket.on('enterPlayer', () => {
+		game.addPlayer(socket.id)
+		emitGameState();
+		console.log(game)
+
+	})
  
 	socket.on('disconnect', function () {
+		console.log(socket.id + ' has disconnected')
 		game.removePlayer(socket.id)
 	});
 
 	socket.on('damageOpponent', (damage) => {
 		const opponent = game.players.find(p => p.id !== socket.id);
-		opponent.hp -= damage;
+		if (opponent) opponent.hp -= damage;
 		emitGameState();
 	});
 
@@ -32,6 +38,7 @@ io.on('connection', function(socket) {
 		game.playerDraw(socket.id)
 		emitGameState();
 	});
+	console.log(game)
 
 
 });

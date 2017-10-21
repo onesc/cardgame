@@ -6,26 +6,41 @@
    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
    </head>
    <body>
+   		<button id="play">Play</button>
    		<div>Your HP is <span class = "yourhp hp"></span></div>
-   		   		<div>Your enemies HP is<span class = "enemyhp hp"></span></div>
-
+   		<div>Your enemies HP is<span class = "enemyhp hp"></span></div>
    		<div id = "hand"></div>
+   		<button id="draw">Draw Card</button>
    </body>
   
    <script>
+
+
      	var socket = io();
+
+     	$("#play").click(function() {
+		  	socket.emit("enterPlayer");
+		  	$("#play").hide()
+		});
+
+		$("#draw").click(function() {
+		  	socket.emit("playerDraw");
+		});
 
       	socket.on('testerEvent', function(data){document.write(data.description)});
     	socket.on('state', function(game){
-    		var me = game.players.find(function(p){ return p.id === socket.id});
-    		var opponent = game.players.find(function(p){ return p.id !== socket.id});
+    		if (game.players.length === 2) {
+    			var me = game.players.find(function(p){ return p.id === socket.id});
+	    		var opponent = game.players.find(function(p){ return p.id !== socket.id});
 
-    		console.log(game)
-    		$('.yourhp').text(me.hp)
-    		$('.enemyhp').text(opponent.hp)
+	    		console.log(game)
+	    		$('.yourhp').text(me.hp)
+	    		$('.enemyhp').text(opponent.hp)
 
-    		$('#hand').html($('<ul>')
-				.append(me.hand.map(card => $("<li>").text(card.name))));
+	    		$('#hand').html($('<ul>')
+					.append(me.hand.map(card => $("<li>").text(card.name))));
+    		}
+    		
     	});
 
     	var s = socket.emit
