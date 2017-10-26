@@ -43,7 +43,7 @@ class Game {
 	triggerEvents(eventName, trigger) {
 		this.eventListeners.forEach(e => {
 			if (e.trigger === eventName) {
-				e.event(trigger)
+				e.event(trigger);
 			}
 		})
 	}
@@ -53,7 +53,7 @@ class Game {
 	}
 
 	removePlayer(id) {
-		this.players = this.players.filter(p => p.id !== id)
+		this.players = this.players.filter(p => p.id !== id);
 	}
 
 	findPlayer(playerID) {
@@ -65,19 +65,18 @@ class Game {
 		player.mana -= card.cost;
 		this.board.push({...card, owner: player.id})
 		player.hand = player.hand.filter(c => c.id !== card.id);
-		this.triggerEvents('play', {playerID: playerID})
-
+		this.triggerEvents('play', {playerID: playerID});
 	}
 
 	damagePlayer(playerID, damage) {
-		const player = this.findPlayer(playerID)
+		const player = this.findPlayer(playerID);
 		player.hp -= damage;
 	}
 
 	playerDraw(playerID) {
 		const player = this.findPlayer(playerID);
 		player.draw();
-		this.triggerEvents('draw', {playerID: playerID})
+		this.triggerEvents('draw', {playerID: playerID});
 	}
 }
 

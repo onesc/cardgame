@@ -29,13 +29,3 @@ class Deck {
 }
 
 module.exports = Deck;
-
-
-
-// {
-// 	text: 'whenever a player draws a card they take 1 damage',
-// 	trigger: 'player_draw',
-// 	event: (trigger) => {
-// 		this.damagePlayer(trigger.playerID, 1);
-// 	}	
-// // }

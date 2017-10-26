@@ -2,52 +2,47 @@
 <html>
    <head>
       	<title>Hello world</title>
-      	 <script src = "/socket.io/socket.io.js"></script>
-   <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+      	<script src = "/socket.io/socket.io.js"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
    </head>
    <body>
    		<button id="play">Play</button>
-      <div id="board"></div>
-   		<div>Your HP is <span class = "yourhp hp"></span> 
-        Your Mana is <span class = "yourmana mana"></span>
-      </div>
-   		<div>Your enemies HP is<span class = "enemyhp hp"></span></div>
+        <div id="board"></div>
+        <div>Your HP is <span class = "yourhp hp"></span>Your Mana is <span class = "yourmana mana"></span></div>
+   		<div>Your enemies HP is <span class = "enemyhp hp"></span></div>
    		<div id = "hand"></div>
    		<button id="draw">Draw Card</button>
-
    </body>
-  
+
    <script>
-
-
    	var socket = io();
     var g;
 
    	$("#play").click(function() {
 	  	socket.emit("enterPlayer");
 	  	$("#play").hide()
-		});
+	});
 
-		$("#draw").click(function() {
+	$("#draw").click(function() {
 	  	socket.emit("playerDraw");
-		});
+	});
 
   	socket.on('state', function(game) {
   		if (game.players.length !== 2) { return };
 
-			var me = game.players.find(function(p){ return p.id === socket.id});
+		var me = game.players.find(function(p){ return p.id === socket.id});
   		var opponent = game.players.find(function(p){ return p.id !== socket.id});
-      g = game;
+        g = game;
 
   		$('.yourhp').text(me.hp)
-      $('.yourmana').text(me.mana)
-
+        $('.yourmana').text(me.mana)
   		$('.enemyhp').text(opponent.hp)
-      $('#board').html($('<ul>')
-      .append(game.board.map(card => $("<li>").text(card.name))));
+
+        $('#board').html($('<ul>')
+            .append(game.board.map(card => $("<li>").text(card.name))));
 
   		$('#hand').html($('<ul>')
-			.append(me.hand.map(card => $("<li>").text(card.name))));
+            .append(me.hand.map(card => $("<li>").text(card.name))));
   	});
 
    </script>
@@ -57,9 +52,10 @@
    			font-size: 30px;
    			color: red;
    		}  
-      .mana {
-        font-size: 30px;
-        color: blue;
-      }
+
+        .mana {
+            font-size: 30px;
+            color: blue;
+        }
    </style>
 </html>
