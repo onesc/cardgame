@@ -11,39 +11,35 @@
    		<div>Your enemies HP is<span class = "enemyhp hp"></span></div>
    		<div id = "hand"></div>
    		<button id="draw">Draw Card</button>
+
    </body>
   
    <script>
 
 
-     	var socket = io();
+   	var socket = io();
 
-     	$("#play").click(function() {
-		  	socket.emit("enterPlayer");
-		  	$("#play").hide()
+   	$("#play").click(function() {
+	  	socket.emit("enterPlayer");
+	  	$("#play").hide()
 		});
 
 		$("#draw").click(function() {
-		  	socket.emit("playerDraw");
+	  	socket.emit("playerDraw");
 		});
 
-      	socket.on('testerEvent', function(data){document.write(data.description)});
-    	socket.on('state', function(game){
-    		if (game.players.length === 2) {
-    			var me = game.players.find(function(p){ return p.id === socket.id});
-	    		var opponent = game.players.find(function(p){ return p.id !== socket.id});
+  	socket.on('state', function(game) {
+  		if (game.players.length !== 2) { return };
 
-	    		console.log(game)
-	    		$('.yourhp').text(me.hp)
-	    		$('.enemyhp').text(opponent.hp)
+			var me = game.players.find(function(p){ return p.id === socket.id});
+  		var opponent = game.players.find(function(p){ return p.id !== socket.id});
 
-	    		$('#hand').html($('<ul>')
-					.append(me.hand.map(card => $("<li>").text(card.name))));
-    		}
-    		
-    	});
+  		$('.yourhp').text(me.hp)
+  		$('.enemyhp').text(opponent.hp)
+  		$('#hand').html($('<ul>')
+			.append(me.hand.map(card => $("<li>").text(card.name))));
+  	});
 
-    	var s = socket.emit
    </script>
 
    <style type="text/css">

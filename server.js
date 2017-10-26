@@ -20,7 +20,6 @@ io.on('connection', function(socket) {
 		game.addPlayer(socket.id)
 		emitGameState();
 		console.log(game)
-
 	})
  
 	socket.on('disconnect', function () {
@@ -36,11 +35,17 @@ io.on('connection', function(socket) {
 
 	socket.on('playerDraw', () => {
 		game.playerDraw(socket.id)
+		game.triggerEvents('player_draw', {playerID: socket.id})
+		console.log(game.players[0].hand)
 		emitGameState();
 	});
-	console.log(game)
 
-
+	socket.on('endTurn', () => {
+		
+		game.triggerEvents('player_draw', {playerID: socket.id})
+		console.log(game.players[0].hand)
+		emitGameState();
+	});
 });
 
 
