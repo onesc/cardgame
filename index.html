@@ -7,6 +7,7 @@
    </head>
    <body>
    		<button id="play">Play</button>
+      <div id="board"></div>
    		<div>Your HP is <span class = "yourhp hp"></span></div>
    		<div>Your enemies HP is<span class = "enemyhp hp"></span></div>
    		<div id = "hand"></div>
@@ -18,6 +19,7 @@
 
 
    	var socket = io();
+    var g;
 
    	$("#play").click(function() {
 	  	socket.emit("enterPlayer");
@@ -33,9 +35,13 @@
 
 			var me = game.players.find(function(p){ return p.id === socket.id});
   		var opponent = game.players.find(function(p){ return p.id !== socket.id});
+      g = game;
 
   		$('.yourhp').text(me.hp)
   		$('.enemyhp').text(opponent.hp)
+      $('#board').html($('<ul>')
+      .append(game.board.map(card => $("<li>").text(card.name))));
+
   		$('#hand').html($('<ul>')
 			.append(me.hand.map(card => $("<li>").text(card.name))));
   	});

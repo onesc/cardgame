@@ -49,17 +49,24 @@ class Game {
 		this.players = this.players.filter(p => p.id !== id)
 	}
 
-	// playCreature(playerID, card) {
-	// 	this.board.push({card: card, owner: playerID})
-	// }
+	findPlayer(playerID) {
+		return this.players.find(p => p.id === playerID);
+	}
+
+	playCard(playerID, card) {
+		const player = this.findPlayer(playerID);
+		player.mana -= card.cost;
+		this.board.push({...card, owner: player.id})
+		player.hand = player.hand.filter(c => c.id !== card.id);
+	}
 
 	damagePlayer(playerID, damage) {
-		const player = this.players.find(p => p.id === playerID);
+		const player = this.findPlayer(playerID)
 		player.hp -= damage;
 	}
 
 	playerDraw(playerID) {
-		const player = this.players.find(p => p.id === playerID);
+		const player = this.findPlayer(playerID);
 		player.draw();
 	}
 }

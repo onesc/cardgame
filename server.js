@@ -40,10 +40,8 @@ io.on('connection', function(socket) {
 		emitGameState();
 	});
 
-	socket.on('endTurn', () => {
-		
-		game.triggerEvents('player_draw', {playerID: socket.id})
-		console.log(game.players[0].hand)
+	socket.on('playCard', (card) => {
+		game.playCard(socket.id, card)
 		emitGameState();
 	});
 });

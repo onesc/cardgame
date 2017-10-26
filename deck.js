@@ -1,5 +1,8 @@
+let id = 0;
+
 const card = (name, cost, type, text, power = undefined, toughness = undefined) => {
-	const card = {name: name, type: type, text: text, cost: cost, power: power, toughness: toughness};	
+	const card = {name: name, type: type, text: text, cost: cost, power: power, toughness: toughness, id: id};	
+	id += 1;
 	return card;
 }
 
