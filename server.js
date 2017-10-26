@@ -14,12 +14,10 @@ io.on('connection', function(socket) {
   		io.sockets.emit('state', game);
   	}
 
-	emitGameState();
-
 	socket.on('enterPlayer', () => {
 		game.addPlayer(socket.id)
+		console.log(socket.id + ' has connected')
 		emitGameState();
-		console.log(game)
 	})
  
 	socket.on('disconnect', function () {
@@ -27,16 +25,8 @@ io.on('connection', function(socket) {
 		game.removePlayer(socket.id)
 	});
 
-	socket.on('damageOpponent', (damage) => {
-		const opponent = game.players.find(p => p.id !== socket.id);
-		if (opponent) opponent.hp -= damage;
-		emitGameState();
-	});
-
 	socket.on('playerDraw', () => {
 		game.playerDraw(socket.id)
-		game.triggerEvents('player_draw', {playerID: socket.id})
-		console.log(game.players[0].hand)
 		emitGameState();
 	});
 
@@ -44,6 +34,8 @@ io.on('connection', function(socket) {
 		game.playCard(socket.id, card)
 		emitGameState();
 	});
+
+	emitGameState();
 });
 
 

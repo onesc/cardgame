@@ -25,9 +25,16 @@ class Game {
 		this.eventListeners =  [
 			{
 				text: 'whenever a player draws a card they take 1 damage',
-				trigger: 'player_draw',
+				trigger: 'draw',
 				event: (trigger) => {
 					this.damagePlayer(trigger.playerID, 1);
+				}	
+			},
+			{
+				text: 'whenever a player plays a card they gain two life',
+				trigger: 'play',
+				event: (trigger) => {
+					this.damagePlayer(trigger.playerID, -2);
 				}	
 			}
 		]; 
@@ -58,6 +65,8 @@ class Game {
 		player.mana -= card.cost;
 		this.board.push({...card, owner: player.id})
 		player.hand = player.hand.filter(c => c.id !== card.id);
+		this.triggerEvents('play', {playerID: playerID})
+
 	}
 
 	damagePlayer(playerID, damage) {
@@ -68,6 +77,7 @@ class Game {
 	playerDraw(playerID) {
 		const player = this.findPlayer(playerID);
 		player.draw();
+		this.triggerEvents('draw', {playerID: playerID})
 	}
 }
 
