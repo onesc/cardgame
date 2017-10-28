@@ -26,24 +26,24 @@ class Game {
 			{
 				text: 'whenever a player draws a card they take 1 damage',
 				trigger: 'draw',
-				event: (trigger) => {
+				callback: (trigger) => {
 					this.damagePlayer(trigger.playerID, 1);
 				}	
 			},
 			{
 				text: 'whenever a player plays a card they gain two life',
 				trigger: 'play',
-				event: (trigger) => {
+				callback: (trigger) => {
 					this.damagePlayer(trigger.playerID, -2);
 				}	
 			}
 		]; 
 	}
 
-	triggerEvents(eventName, trigger) {
-		this.eventListeners.forEach(e => {
-			if (e.trigger === eventName) {
-				e.event(trigger);
+	broadcastEvent(event) {
+		this.eventListeners.forEach(listener => {
+			if (listener.trigger === event.name) {
+				listener.callback(event);
 			}
 		})
 	}
@@ -65,7 +65,7 @@ class Game {
 		player.mana -= card.cost;
 		this.board.push({...card, owner: player.id})
 		player.hand = player.hand.filter(c => c.id !== card.id);
-		this.triggerEvents('play', {playerID: playerID});
+		this.broadcastEvent({name: 'play', playerID: playerID});
 	}
 
 	damagePlayer(playerID, damage) {
@@ -76,7 +76,7 @@ class Game {
 	playerDraw(playerID) {
 		const player = this.findPlayer(playerID);
 		player.draw();
-		this.triggerEvents('draw', {playerID: playerID});
+		this.broadcastEvent({name: "draw", playerID: playerID});
 	}
 }
 
