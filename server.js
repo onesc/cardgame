@@ -36,6 +36,11 @@ io.on('connection', function(socket) {
 		emitGameState();
 	});
 
+	socket.on('nextPhase', () => {
+		game.phase.next();
+		emitGameState();
+	})
+
 	emitGameState();
 });
 

@@ -10,11 +10,46 @@ class Player {
 		this.hand = this.deck.cards.splice(0, 3);
 	}
 
-	draw() {
-		if (this.deck.cards.length > 0) {
-			this.hand.push(this.deck.cards.shift());
+	draw(amount = 1) {
+		for (let i=0; i < amount; i++) {
+			if (this.deck.cards.length > 0) {
+				this.hand.push(this.deck.cards.shift());
+			}
 		}
 	} 
+}
+
+class Phase {
+	constructor(player1, player2) {
+		this.player1 = player1;
+		this.player2 = player2;
+		this.currentPlayer = player1;
+		this.phase = "draw"
+	}
+
+	next() {
+		switch(this.phase) {
+		    case "draw":
+		    	this.phase = "first_main"
+		    	this.currentPlayer.draw();
+		        break;
+		    case "first_main":
+		    	this.phase = "attack"
+		        break;
+		    case "attack":
+		    	this.phase = "second_main"
+		        break;
+		    case "second_main":
+		    	this.phase = "end"
+		        break;
+		    case "end":
+		    	this.phase = "draw"
+		    	this.turn = this.turn === this.player1 ? this.player2 : this.player1;
+		        break;
+		    default:
+		        return;
+		}
+	}
 }
 
 class Game {
@@ -50,6 +85,13 @@ class Game {
 
 	addPlayer(id)  {
 		this.players.push(new Player(id));
+		this.startGame();
+	}
+
+	startGame() {
+		if (this.players.length === 2) {
+			this.phase = new Phase(this.players[0], this.players[1]);
+		}
 	}
 
 	removePlayer(id) {
