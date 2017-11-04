@@ -11,7 +11,7 @@ class Player {
 	}
 
 	draw(amount = 1) {
-		for (let i=0; i < amount; i++) {
+		for (let i  = 0; i < amount; i++) {
 			if (this.deck.cards.length > 0) {
 				this.hand.push(this.deck.cards.shift());
 			}
@@ -24,27 +24,26 @@ class Phase {
 		this.player1 = player1;
 		this.player2 = player2;
 		this.currentPlayer = player1;
-		this.phase = "draw"
+		this.step = "draw"
 	}
 
 	next() {
-		switch(this.phase) {
+		switch(this.step) {
 		    case "draw":
-		    	this.phase = "first_main"
-		    	this.currentPlayer.draw();
+		    	this.step = "first_main"
 		        break;
 		    case "first_main":
-		    	this.phase = "attack"
+		    	this.step = "attack"
 		        break;
 		    case "attack":
-		    	this.phase = "second_main"
+		    	this.step = "second_main"
 		        break;
 		    case "second_main":
-		    	this.phase = "end"
+		    	this.step = "end"
 		        break;
 		    case "end":
-		    	this.phase = "draw"
-		    	this.turn = this.turn === this.player1 ? this.player2 : this.player1;
+		    	this.step = "draw"
+		    	this.currentPlayer = this.currentPlayer === this.player1 ? this.player2 : this.player1;
 		        break;
 		    default:
 		        return;
@@ -56,7 +55,6 @@ class Game {
 	constructor() {
 		this.players = [];
 		this.board = []
-		this.turn = ''
 		this.eventListeners =  [
 			{
 				text: 'whenever a player draws a card they take 1 damage',
@@ -86,6 +84,13 @@ class Game {
 	addPlayer(id)  {
 		this.players.push(new Player(id));
 		this.startGame();
+	}
+
+	nextPhase() {
+		this.phase.next()
+		if (this.phase.step === "draw") {
+			this.playerDraw(this.phase.currentPlayer.id);
+		}
 	}
 
 	startGame() {

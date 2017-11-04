@@ -14,7 +14,7 @@
    		<button id="draw">Draw Card</button>
    </body>
 
-   <script>
+  <script>
    	var socket = io();
     var g;
 
@@ -28,24 +28,24 @@
 	});
 
   	socket.on('state', function(game) {
-  		if (game.players.length !== 2) { return };
+		if (game.players.length !== 2) { return };
 
 		var me = game.players.find(function(p){ return p.id === socket.id});
-  		var opponent = game.players.find(function(p){ return p.id !== socket.id});
-        g = game;
+		var opponent = game.players.find(function(p){ return p.id !== socket.id});
+    g = game;
 
-  		$('.yourhp').text(me.hp)
-        $('.yourmana').text(me.mana)
-  		$('.enemyhp').text(opponent.hp)
+		$('.yourhp').text(me.hp)
+    $('.yourmana').text(me.mana)
+		$('.enemyhp').text(opponent.hp)
 
-        $('#board').html($('<ul>')
-            .append(game.board.map(card => $("<li>").text(card.name))));
+    $('#board').html($('<ul>')
+      .append(game.board.map(card => $("<li>").text(card.name))));
 
-  		$('#hand').html($('<ul>')
-            .append(me.hand.map(card => $("<li>").text(card.name))));
+		$('#hand').html($('<ul>')
+      .append(me.hand.map(card => $("<li>").text(card.name))));
   	});
 
-   </script>
+</script>
 
    <style type="text/css">
    		.hp {

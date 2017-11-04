@@ -37,7 +37,7 @@ io.on('connection', function(socket) {
 	});
 
 	socket.on('nextPhase', () => {
-		game.phase.next();
+		game.nextPhase();
 		emitGameState();
 	})
 

@@ -1,5 +1,5 @@
 var expect = require('chai').expect
-var { Game } = require('./game.js')
+var { Game } = require('../game.js')
 var assert = require('assert');
 
 describe('Game', function() {
