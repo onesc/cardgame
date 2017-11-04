@@ -31,8 +31,8 @@ io.on('connection', function(socket) {
 		emitGameState();
 	});
 
-	socket.on('playCard', (card) => {
-		game.playCard(socket.id, card)
+	socket.on('playCard', (card, pos) => {
+		game.playCard(socket.id, card, pos)
 		emitGameState();
 	});
 

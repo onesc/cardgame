@@ -51,6 +51,20 @@ class Phase {
 	}
 }
 
+class Board {
+	constructor(player1, player2) {
+		this.player1 = player1;
+		this.player2 = player2;
+		this.player1board = {attack: null, defend: null, support: null};
+		this.player2board = {attack: null, defend: null, support: null};
+	}
+
+	playCard(playerID, card, pos) {
+		const board = playerID === this.player1.id ? this.player1board : this.player2board;
+		board[pos] = card;
+	}
+}
+
 class Game {
 	constructor() {
 		this.players = [];
@@ -96,6 +110,7 @@ class Game {
 	startGame() {
 		if (this.players.length === 2) {
 			this.phase = new Phase(this.players[0], this.players[1]);
+			this.board = new Board(this.players[0], this.players[1]);
 		}
 	}
 
@@ -107,10 +122,10 @@ class Game {
 		return this.players.find(p => p.id === playerID);
 	}
 
-	playCard(playerID, card) {
+	playCard(playerID, card, pos) {
 		const player = this.findPlayer(playerID);
 		player.mana -= card.cost;
-		this.board.push({...card, owner: player.id})
+		this.board.playCard(playerID, card, pos);
 		player.hand = player.hand.filter(c => c.id !== card.id);
 		this.broadcastEvent({name: 'play', playerID: playerID});
 	}

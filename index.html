@@ -38,8 +38,8 @@
     $('.yourmana').text(me.mana)
 		$('.enemyhp').text(opponent.hp)
 
-    $('#board').html($('<ul>')
-      .append(game.board.map(card => $("<li>").text(card.name))));
+    // $('#board').html($('<ul>')
+    //   .append(game.board.map(card => $("<li>").text(card.name))));
 
 		$('#hand').html($('<ul>')
       .append(me.hand.map(card => $("<li>").text(card.name))));
