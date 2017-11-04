@@ -68,7 +68,6 @@ class Board {
 class Game {
 	constructor() {
 		this.players = [];
-		this.board = []
 		this.eventListeners =  [
 			{
 				text: 'whenever a player draws a card they take 1 damage',
