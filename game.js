@@ -4,7 +4,8 @@ class Player {
 	constructor(id) {
 		this.id = id;
 		this.hp = 50;
-		this.mana = 10;
+		this.currentMana = 1;
+		this.manaPool = 1;
 		this.deck = new Deck;
 		this.deck.shuffle();
 		this.hand = this.deck.cards.splice(0, 3);
@@ -35,9 +36,9 @@ class Phase {
 		    	this.step = "first_main"
 		        break;
 		    case "first_main":
-		    	this.step = "attack"
+		    	this.step = "combat"
 		        break;
-		    case "attack":
+		    case "combat":
 		    	this.step = "second_main"
 		        break;
 		    case "second_main":
@@ -138,6 +139,14 @@ class Game {
 		this.phase.next()
 		if (this.phase.step === "draw") {
 			this.playerDraw(this.phase.currentPlayer.id);
+			this.phase.currentPlayer.manaPool += 1;
+			this.phase.currentPlayer.currentMana = this.phase.currentPlayer.manaPool;
+			this.phase.next()
+		}
+
+		if (this.phase.step === "combat") {
+			this.combat(this.phase.currentPlayer.id);
+			this.phase.next();
 		}
 	}
 
@@ -145,8 +154,6 @@ class Game {
 		if (this.players.length === 2) {
 			this.phase = new Phase(this.players[0], this.players[1]);
 			this.board = new Board(this.players[0], this.players[1]);
-			// this.players[0].opponent = this.players[1];
-			// this.players[1].opponent = this.players[0];
 		}
 	}
 
@@ -156,7 +163,7 @@ class Game {
 
 	playCard(playerID, card, pos) {
 		const player = this.getPlayer(playerID);
-		player.mana -= card.cost;
+		player.currentMana -= card.cost;
 		this.board.playCard(playerID, card, pos);
 		player.hand = player.hand.filter(c => c.id !== card.id);
 		this.broadcastEvent({name: 'play', playerID: playerID});
@@ -172,7 +179,6 @@ class Game {
 		creature.toughness -= damage;
 		if (creature.toughness <= 0) { 
 			this.killCreature(creatureID);
-			console.log("CREATURE DIED") 
 		}
 	}
 
@@ -206,8 +212,7 @@ class Game {
 				this.damageCreature(attacker.target.id, atkBoard.attack.power)
 
 				if (attacker.target !== null) { // if creature didnt die after combat
-					console.log(this.board.getCreature(atkBoard.attack.id), " should take return damage");
-					this.damageCreature(atkBoard.attack.id, attacker.target.power); // else return damage
+					this.damageCreature(atkBoard.attack.id, attacker.target.power); // return damage
 				}
 			}
 		}

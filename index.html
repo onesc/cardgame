@@ -14,7 +14,7 @@
       <div>Your HP is <span class = "yourhp hp"></span>Your Mana is <span class = "yourmana mana"></span></div>
    		<div>Your enemies HP is <span class = "enemyhp hp"></span></div>
    		<div id = "hand"></div>
-   		<button id="draw">Draw Card</button>
+   		<button id="next">Next Phase</button>
    </body>
 
 <script>
@@ -26,8 +26,8 @@
 	  	$("#play").hide()
 	});
 
-	$("#draw").click(function() {
-	  	socket.emit("playerDraw");
+	$("#next").click(function() {
+	  	socket.emit("nextPhase");
 	});
 
 	socket.on('state', function(game) {
@@ -43,7 +43,7 @@
 
 
 		$('.yourhp').text(me.hp)
-    $('.yourmana').text(me.mana)
+    $('.yourmana').text(me.currentMana)
 		$('.enemyhp').text(opponent.hp)
 
     // $('#board').html($('<ul>')

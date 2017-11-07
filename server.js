@@ -41,11 +41,6 @@ io.on('connection', function(socket) {
 		emitGameState();
 	})
 
-	socket.on('combat', () => {
-		game.combat(socket.id);
-		emitGameState();
-	})
-
 	socket.on('setTarget', (target) => {
 		game.setTarget(socket.id, target);
 		emitGameState();
