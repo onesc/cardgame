@@ -15,7 +15,7 @@ class Deck {
 			card('Obese Horror', 2, 'Creature', "", 1, 7),
 			card('Noob Mage', 2, 'Creature', 'whenever a player draws a card they take 1 damage', 1, 1),
 			card('Arcane Explosion', 2, 'Spell', "Deal 1 damage to all enemies"),
-			card('Cute Spiderling', 3, 'Spell', "Deathtouch", 1, 1),
+			card('Cute Spiderling', 3, 'Creature', "Deathtouch", 1, 1),
 			card('Lava Strike', 3, 'Spell', "Deal 4 damage to target enemy")
 		]
 	}

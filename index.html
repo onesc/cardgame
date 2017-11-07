@@ -7,18 +7,21 @@
    </head>
    <body>
    		<button id="play">Play</button>
-        <div id="board"></div>
-        <div>Your HP is <span class = "yourhp hp"></span>Your Mana is <span class = "yourmana mana"></span></div>
+
+      <div id="myBoard"></div>
+      <div id="opponentBoard"></div>
+
+      <div>Your HP is <span class = "yourhp hp"></span>Your Mana is <span class = "yourmana mana"></span></div>
    		<div>Your enemies HP is <span class = "enemyhp hp"></span></div>
    		<div id = "hand"></div>
    		<button id="draw">Draw Card</button>
    </body>
 
-  <script>
-   	var socket = io();
-    var g;
+<script>
+ 	var socket = io();
+  var g, me, opponent, myBoard, opponentBoard;
 
-   	$("#play").click(function() {
+ 	$("#play").click(function() {
 	  	socket.emit("enterPlayer");
 	  	$("#play").hide()
 	});
@@ -27,12 +30,17 @@
 	  	socket.emit("playerDraw");
 	});
 
-  	socket.on('state', function(game) {
+	socket.on('state', function(game) {
 		if (game.players.length !== 2) { return };
 
-		var me = game.players.find(function(p){ return p.id === socket.id});
-		var opponent = game.players.find(function(p){ return p.id !== socket.id});
     g = game;
+
+		me = game.players.find(function(p){ return p.id === socket.id});
+		opponent = game.players.find(function(p){ return p.id !== socket.id});
+
+    myBoard = me.id === g.board.player1.id ? g.board.player1board : g.board.player2board;
+    opponentBoard = opponent.id === g.board.player1.id ? g.board.player1board : g.board.player2board;
+
 
 		$('.yourhp').text(me.hp)
     $('.yourmana').text(me.mana)
@@ -47,15 +55,15 @@
 
 </script>
 
-   <style type="text/css">
-   		.hp {
-   			font-size: 30px;
-   			color: red;
-   		}  
+  <style type="text/css">
+  	.hp {
+  		font-size: 30px;
+  		color: red;
+  	}  
 
-        .mana {
-            font-size: 30px;
-            color: blue;
-        }
-   </style>
+    .mana {
+      font-size: 30px;
+      color: blue;
+    }
+  </style>
 </html>
