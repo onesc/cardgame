@@ -141,12 +141,10 @@ class Game {
 			this.playerDraw(this.phase.currentPlayer.id);
 			this.phase.currentPlayer.manaPool += 1;
 			this.phase.currentPlayer.currentMana = this.phase.currentPlayer.manaPool;
-			this.phase.next()
 		}
 
 		if (this.phase.step === "combat") {
 			this.combat(this.phase.currentPlayer.id);
-			this.phase.next();
 		}
 	}
 

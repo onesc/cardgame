@@ -32,6 +32,15 @@ io.on('connection', function(socket) {
 	});
 
 	socket.on('playCard', (card, pos) => {
+		const player = game.getPlayer(socket.id);
+		
+		if (card.cost > player.currentMana || game.phase.currentPlayer.id !== socket.id) { 
+			return;
+		}
+
+		if (game.phase.step !== "first_main" && game.phase.step !== "second_main") {
+			return;
+		}
 		game.playCard(socket.id, card, pos)
 		emitGameState();
 	});
