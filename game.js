@@ -79,7 +79,16 @@ class Board {
 		if (this.player2board.attack && creatureID === this.player2board.attack.id) { return this.player2board.attack }
 		if (this.player2board.defend && creatureID === this.player2board.defend.id) { return this.player2board.defend }
 		if (this.player2board.support && creatureID === this.player2board.support.id) { return this.player2board.support }
-		
+		return null;
+	}
+
+	removeCreature(creatureID) {
+		if (this.player1board.attack && creatureID === this.player1board.attack.id) { this.player1board.attack = null }
+		if (this.player1board.defend && creatureID === this.player1board.defend.id) { this.player1board.defend = null }
+		if (this.player1board.support && creatureID === this.player1board.support.id) { this.player1board.support = null }
+		if (this.player2board.attack && creatureID === this.player2board.attack.id) { this.player2board.attack = null }
+		if (this.player2board.defend && creatureID === this.player2board.defend.id) { this.player2board.defend = null }
+		if (this.player2board.support && creatureID === this.player2board.support.id) { this.player2board.support = null }
 	}
 }
 
@@ -161,7 +170,16 @@ class Game {
 	damageCreature(creatureID, damage) {
 		const creature = this.board.getCreature(creatureID);// damage creature and then broadcast event of creature being damaged
 		creature.toughness -= damage;
-		if (creature.toughness <= 0) { console.log("CREATURE DIED") }
+		if (creature.toughness <= 0) { 
+			this.killCreature(creatureID);
+			console.log("CREATURE DIED") 
+		}
+	}
+
+	killCreature(creatureID) {
+		const creature = this.board.removeCreature(creatureID); 
+		if (this.players[0].target && this.players[0].target.id === creatureID) {this.players[0].target = null};
+		if (this.players[1].target && this.players[1].target.id === creatureID) {this.players[1].target = null};
 	}
 
 	setTarget(playerID, target) {
@@ -186,9 +204,27 @@ class Game {
 				this.damagePlayer(opponent.id, atkBoard.attack.power);
 			} else if (attacker.target.type === "Creature") {
 				this.damageCreature(attacker.target.id, atkBoard.attack.power)
+
+				if (attacker.target !== null) { // if creature didnt die after combat
+					console.log(this.board.getCreature(atkBoard.attack.id), " should take return damage");
+					this.damageCreature(atkBoard.attack.id, attacker.target.power); // else return damage
+				}
+			}
+		}
+
+		if (atkBoard.defend) {
+			const supportBuff = atkBoard.support !== null ? atkBoard.support.power : 0; 
+
+			if (defBoard.defend) {
+				const defPwr = defBoard.defend.power;
+				this.damageCreature(defBoard.defend.id, atkBoard.defend.power + supportBuff);
+				this.damageCreature(atkBoard.defend.id, defPwr);
+			} else {
+				this.damagePlayer(opponent.id, atkBoard.defend.power + supportBuff);
 			}
 		}
 	}
+
 }
 
 exports.Game = Game;
