@@ -114,7 +114,7 @@ class Game {
 		]; 
 	}
 
-	broadcastEvent(event) {
+	broadcastEvent(event) { // TEST THIS
 		this.eventListeners.forEach(listener => {
 			if (listener.trigger === event.name) {
 				listener.callback(event);
@@ -197,7 +197,7 @@ class Game {
 		this.broadcastEvent({name: "draw", playerID: playerID});
 	}
 
-	combat(attackerID) {
+	combat(attackerID) { // TEST THIS.. EVENTUALLY
 		const attacker = this.getPlayer(attackerID);
 		const atkBoard = this.board.getBoard(attackerID);
 		const opponent = this.getOpponent(attackerID);

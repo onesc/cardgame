@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html>
-   <head>
+  <head>
       	<title>Hello world</title>
       	<script src = "/socket.io/socket.io.js"></script>
         <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-   </head>
-   <body>
-   		<button id="play">Play</button>
+  </head>
+  <body>
+		<button id="play">Play</button>
 
-      <div id="myBoard"></div>
-      <div id="opponentBoard"></div>
+    <div id="myBoard"></div>
+    <div id="opponentBoard"></div>
 
-      <div> It is <span class = "turn"></span> <span class = "step"></span> step</div>
+    <div> It is <span class = "turn"></span> <span class = "step"></span> step</div>
 
-      <div>Your HP is <span class = "yourhp hp"></span>Your Mana is <span class = "yourmana mana"></span></div>
-   		<div>Your enemies HP is <span class = "enemyhp hp"></span></div>
-   		<div id = "hand"></div>
-   		<button id="next">Next Phase</button>
-   </body>
+    <div>Your HP is <span class = "yourhp hp"></span>Your Mana is <span class = "yourmana mana"></span></div>
+  		<div>Your enemies HP is <span class = "enemyhp hp"></span></div>
+  		<div id = "hand"></div>
+  		<button id="next">Next Phase</button>
+  </body>
 
 <script>
  	var socket = io();
@@ -52,9 +52,19 @@
     // $('#board').html($('<ul>')
     //   .append(game.board.map(card => $("<li>").text(card.name))));
 
-		$('#hand').html($('<ul>')
-      .append(me.hand.map(card => $("<li>").text(card.name))));
-  	});
+    $('#hand').html(null)
+    me.hand.forEach(cardinfo => {
+      var card = $("<div class='card'>");
+      card.append($("<span class='name'>").text(cardinfo.name));
+      card.append($("<img class='image'>").attr("src", cardinfo.imageSrc));
+      card.append($("<div class='type'>").text(cardinfo.type));
+      card.append($("<div class='text'>").text(cardinfo.text));
+      card.append($("<span class='power'>").text(cardinfo.power));
+      card.append($("<span class='toughness'>").text(cardinfo.toughness));
+      $('#hand').append(card);
+    })
+
+  });
 
 </script>
 
@@ -67,6 +77,45 @@
     .mana {
       font-size: 30px;
       color: blue;
+    }
+
+    #hand {
+      display: flex;
+    }
+
+    .card {
+      width: 120px;
+      height: 180px;
+      border: 4px solid black;
+      position: relative;
+      display: inline-block;
+
+    }
+
+    .card img {
+      height: 50%;
+    }
+
+    .card .text {
+      font-size: 11px;
+    }
+
+    .card .name {
+      font-size: 13px;
+    }
+
+    .card .power {
+      position: absolute;
+      bottom: 0;
+      left: 3px;
+      font-size: 18px;
+    }
+
+    .card .toughness {
+      position: absolute;
+      bottom: 0;
+      font-size: 18px;
+      right: 3px;
     }
   </style>
 </html>
