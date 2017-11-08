@@ -1,19 +1,23 @@
 {
-  "name": "socketing",
-  "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
-  "scripts": {
-    "test": "mocha"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "express": "^4.16.2",
-    "socket.io": "^2.0.3"
-  },
-  "devDependencies": {
-    "chai": "^4.1.2",
-    "mocha": "^4.0.1"
-  }
+	"name": "socketing",
+	"version": "1.0.0",
+	"description": "",
+	"main": "server.js",
+	"scripts": {
+		"test": "mocha"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"express": "^4.16.2",
+		"socket.io": "^2.0.3"
+	},
+	"pre-push": [
+		"test"
+	],
+	"devDependencies": {
+		"chai": "^4.1.2",
+		"mocha": "^4.0.1",
+		"pre-push": "^0.1.1"
+	}
 }
