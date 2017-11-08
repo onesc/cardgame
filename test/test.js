@@ -79,7 +79,7 @@ describe('Game', function() {
 			const player = game.getPlayer("1");
 			assert.equal(player.currentMana, 1);
 
-			const testCard = { name: "Test Card", cost: 1 }
+			const testCard = { name: "Test Card", cost: 1, id: "12345" }
 			game.playCard("1", testCard, "attack");
 
 			assert.equal(player.currentMana, 0)
@@ -88,6 +88,28 @@ describe('Game', function() {
 				defend: null,
 				support: null
 			});
+		})
+
+		it('setting target adds attribute to player', () => {
+			const player = game.getPlayer("1");
+			assert.equal(player.target, null);
+			const opponent = game.getOpponent("1");
+			game.setTarget("1", opponent);
+			assert.deepEqual(player.target, opponent);
+		})
+
+		it('killing creatures clears target and board', () => {
+			const player = game.getPlayer("1");
+			const testCard = { name: "Test Card", cost: 1, id: "12345" }
+			game.playCard("1", testCard, "attack");
+			game.setTarget("1", game.board.player1board.attack);
+
+			assert.deepEqual(game.board.player1board.attack, testCard);
+			assert.deepEqual(player.target, game.board.player1board.attack);
+
+			game.killCreature("12345");
+			assert.deepEqual(game.board.player1board.attack, null);
+			assert.deepEqual(player.target, null);
 		})
 	});
 });
