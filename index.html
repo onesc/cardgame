@@ -60,6 +60,7 @@
       me.hand.forEach(cardinfo => {
         var card = $("<div class='card'>");
         card.append($("<span class='name'>").text(cardinfo.name));
+        card.append($("<span class='cost'>").text(cardinfo.cost));
         card.append($("<img class='image'>").attr("src", cardinfo.imageSrc));
         card.append($("<div class='type'>").text(cardinfo.type));
         card.append($("<div class='text'>").text(cardinfo.text));
@@ -94,6 +95,11 @@
       position: relative;
       display: inline-block;
 
+    }
+
+    .card .cost {
+      position: absolute;
+      right: 3px;
     }
 
     .card img {
