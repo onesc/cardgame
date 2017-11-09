@@ -25,27 +25,30 @@ io.on('connection', function(socket) {
 		game.removePlayer(socket.id)
 		emitGameState();
 	});
-
-	socket.on('playerDraw', () => {
-		game.playerDraw(socket.id)
-		emitGameState();
-	});
-
+	
 	socket.on('playCard', (card, pos) => {
 		const player = game.getPlayer(socket.id);
 		
 		if (card.cost > player.currentMana || game.phase.currentPlayer.id !== socket.id) { 
+			socket.emit('message', "you do not have enough mana")
 			return;
 		}
 
-		if (game.phase.step !== "first_main" && game.phase.step !== "second_main") {
+		if (game.phase.currentPlayer.id !== socket.id || (game.phase.step !== "first_main" && game.phase.step !== "second_main")) {
+			socket.emit('message', "you can only play cards in your first and second main step")
 			return;
 		}
+
 		game.playCard(socket.id, card, pos)
 		emitGameState();
 	});
 
 	socket.on('nextPhase', () => {
+		if (game.phase.currentPlayer.id !== socket.id) {
+			socket.emit('message', "it is not your turn");
+			return;
+		}
+
 		game.nextPhase();
 		emitGameState();
 	})

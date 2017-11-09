@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-      	<title>Hello world</title>
-      	<script src = "/socket.io/socket.io.js"></script>
-        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  	<title>Hello world</title>
+  	<script src = "/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   </head>
   <body>
 		<button id="play">Play</button>
@@ -19,54 +19,58 @@
   		<button id="next">Next Phase</button>
   </body>
 
-<script>
- 	var socket = io();
-  var g, me, opponent, myBoard, opponentBoard;
+  <script>
+   	var socket = io();
+    var g, me, opponent, myBoard, opponentBoard;
 
- 	$("#play").click(function() {
-	  	socket.emit("enterPlayer");
-	  	$("#play").hide()
-	});
+   	$("#play").click(function() {
+    	socket.emit("enterPlayer");
+    	$("#play").hide()
+  	});
 
-	$("#next").click(function() {
-	  	socket.emit("nextPhase");
-	});
+  	$("#next").click(function() {
+    	socket.emit("nextPhase");
+  	});
 
-	socket.on('state', function(game) {
-		if (game.players.length !== 2) { return };
-
-    g = game;
-		me = game.players.find(function(p){ return p.id === socket.id});
-		opponent = game.players.find(function(p){ return p.id !== socket.id});
-    myBoard = me.id === g.board.player1.id ? g.board.player1board : g.board.player2board;
-    opponentBoard = opponent.id === g.board.player1.id ? g.board.player1board : g.board.player2board;
-
-		$('.yourhp').text(me.hp)
-    $('.yourmana').text(me.currentMana)
-		$('.enemyhp').text(opponent.hp)
-
-    var turnText = me.id === g.phase.currentPlayer.id ? "YOUR" : "your OPPONENTS";
-    $('.turn').text(turnText)
-    $('.step').text(g.phase.step)
-
-    // $('#board').html($('<ul>')
-    //   .append(game.board.map(card => $("<li>").text(card.name))));
-
-    $('#hand').html(null)
-    me.hand.forEach(cardinfo => {
-      var card = $("<div class='card'>");
-      card.append($("<span class='name'>").text(cardinfo.name));
-      card.append($("<img class='image'>").attr("src", cardinfo.imageSrc));
-      card.append($("<div class='type'>").text(cardinfo.type));
-      card.append($("<div class='text'>").text(cardinfo.text));
-      card.append($("<span class='power'>").text(cardinfo.power));
-      card.append($("<span class='toughness'>").text(cardinfo.toughness));
-      $('#hand').append(card);
+    socket.on('message', (message) => {
+      window.alert(message)
     })
 
-  });
+  	socket.on('state', function(game) {
+  		if (game.players.length !== 2) { return };
 
-</script>
+      g = game;
+  		me = game.players.find(function(p){ return p.id === socket.id});
+  		opponent = game.players.find(function(p){ return p.id !== socket.id});
+      myBoard = me.id === g.board.player1.id ? g.board.player1board : g.board.player2board;
+      opponentBoard = opponent.id === g.board.player1.id ? g.board.player1board : g.board.player2board;
+
+  		$('.yourhp').text(me.hp)
+      $('.yourmana').text(me.currentMana)
+  		$('.enemyhp').text(opponent.hp)
+
+      var turnText = me.id === g.phase.currentPlayer.id ? "YOUR" : "your OPPONENTS";
+      $('.turn').text(turnText)
+      $('.step').text(g.phase.step)
+
+      // $('#board').html($('<ul>')
+      //   .append(game.board.map(card => $("<li>").text(card.name))));
+
+      $('#hand').html(null)
+      me.hand.forEach(cardinfo => {
+        var card = $("<div class='card'>");
+        card.append($("<span class='name'>").text(cardinfo.name));
+        card.append($("<img class='image'>").attr("src", cardinfo.imageSrc));
+        card.append($("<div class='type'>").text(cardinfo.type));
+        card.append($("<div class='text'>").text(cardinfo.text));
+        card.append($("<span class='power'>").text(cardinfo.power));
+        card.append($("<span class='toughness'>").text(cardinfo.toughness));
+        $('#hand').append(card);
+      })
+
+    });
+
+  </script>
 
   <style type="text/css">
   	.hp {
