@@ -96,15 +96,7 @@ class Board {
 class Game {
 	constructor() {
 		this.players = [];
-		this.eventListeners =  [
-			{
-				text: 'whenever a player plays a card they gain two life',
-				trigger: 'play',
-				callback: (game, trigger) => {
-					game.damagePlayer(trigger.playerID, -2);
-				}
-			}
-		]; 
+		this.eventListeners = []; 
 	}
 
 	broadcastEvent(event) { // TEST THIS

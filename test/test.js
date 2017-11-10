@@ -114,5 +114,30 @@ describe('Game', function() {
 			assert.deepEqual(game.board.player1board.attack, null);
 			assert.deepEqual(player.target, null);
 		})
+
+		it('playing a creature adds its event listeners with playerID and creatureID and killing it removes it', () => {
+			const player = game.getPlayer("1");
+
+			const eventListeners = [{
+				text: 'whenever a player plays a card they gain two life',
+				trigger: 'play',
+				callback: (game, trigger) => {
+					game.damagePlayer(trigger.playerID, -2);
+				}
+			}];
+
+			const testCard = { name: "Test Card", cost: 1, id: "12345", eventListeners: eventListeners};
+			player.hand.push(testCard);
+
+			assert.equal(game.eventListeners.length, 0);
+
+			game.playCard("1", "12345", "attack");
+
+			assert.deepEqual(game.eventListeners[0], {...eventListeners[0], cardID: "12345", playerID: "1"});
+
+			game.killCreature("12345");
+
+			assert.equal(game.eventListeners.length, 0);
+		})
 	});
 });
