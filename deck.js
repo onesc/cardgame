@@ -1,11 +1,5 @@
 let id = 0;
 
-// const card = (name, cost, type, text, power = undefined, toughness = undefined) => {
-// 	const card = {name: name, type: type, text: text, cost: cost, power: power, toughness: toughness, id: id, imageSrc: "https://previews.123rf.com/images/memoangeles/memoangeles1312/memoangeles131200007/24682744-Crazy-cartoon-troll-Stock-Vector-goblin.jpg"};	
-// 	id += 1;
-// 	return card;
-// }
-
 const cards = [
 	{
 		name: 'Urchin Slingshotter', 

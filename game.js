@@ -158,7 +158,13 @@ class Game {
 
 		player.currentMana -= card.cost;
 		this.board.playCard(playerID, card, pos);
-		if (card.eventListeners) { this.eventListeners = this.eventListeners.concat(card.eventListeners) };
+		if (card.eventListeners) {
+			const listeners = card.eventListeners.map(l => {
+				return {...l, cardID: cardID, playerID: playerID};
+			})
+			this.eventListeners = this.eventListeners.concat(listeners) 
+		};
+
 		player.hand = player.hand.filter(c => c.id !== cardID);
 		this.broadcastEvent({name: 'play', playerID: playerID});
 	}
@@ -180,6 +186,7 @@ class Game {
 		const creature = this.board.removeCreature(creatureID); 
 		if (this.players[0].target && this.players[0].target.id === creatureID) {this.players[0].target = null};
 		if (this.players[1].target && this.players[1].target.id === creatureID) {this.players[1].target = null};
+		this.eventListeners = this.eventListeners.filter(l => l.cardID !== creatureID);
 	}
 
 	setTarget(playerID, target) {
