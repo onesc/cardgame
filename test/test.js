@@ -77,10 +77,10 @@ describe('Game', function() {
 
 		it('playing cards subtracts mana, adds it to board and removes from hand', () => {
 			const player = game.getPlayer("1");
-			assert.equal(player.currentMana, 1);
-
 			const testCard = { name: "Test Card", cost: 1, id: "12345" }
 			player.hand.push(testCard);
+
+			assert.equal(player.currentMana, 1);
 			game.playCard("1", "12345", "attack");
 
 			assert.equal(player.currentMana, 0)
