@@ -7,16 +7,12 @@
   </head>
   <body>
 		<button id="play">Play</button>
-
-    <div id="myBoard"></div>
-    <div id="opponentBoard"></div>
-
     <div> It is <span class = "turn"></span> <span class = "step"></span> step</div>
-
     <div>Your HP is <span class = "yourhp hp"></span>Your Mana is <span class = "yourmana mana"></span></div>
-  		<div>Your enemies HP is <span class = "enemyhp hp"></span></div>
-  		<div id = "hand"></div>
-  		<button id="next">Next Phase</button>
+		<div>Your enemies HP is <span class = "enemyhp hp"></span></div>
+    
+		<div id = "hand"></div>
+		<button id="next">Next Phase</button>
   </body>
 
   <script>
@@ -68,7 +64,6 @@
         card.append($("<span class='toughness'>").text(cardinfo.toughness));
         $('#hand').append(card);
       })
-
     });
 
   </script>

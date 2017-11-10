@@ -75,12 +75,13 @@ describe('Game', function() {
 			assert.equal(player.hand.length, 4);
 		})
 
-		it('playing cards subtracts mana and adds it to board', () => {
+		it('playing cards subtracts mana, adds it to board and removes from hand', () => {
 			const player = game.getPlayer("1");
 			assert.equal(player.currentMana, 1);
 
 			const testCard = { name: "Test Card", cost: 1, id: "12345" }
-			game.playCard("1", testCard, "attack");
+			player.hand.push(testCard);
+			game.playCard("1", "12345", "attack");
 
 			assert.equal(player.currentMana, 0)
 			assert.deepEqual(game.board.player1board, {
@@ -88,6 +89,7 @@ describe('Game', function() {
 				defend: null,
 				support: null
 			});
+			assert.equal(player.hand.length, 3);
 		})
 
 		it('setting target adds attribute to player', () => {
@@ -101,7 +103,8 @@ describe('Game', function() {
 		it('killing creatures clears target and board', () => {
 			const player = game.getPlayer("1");
 			const testCard = { name: "Test Card", cost: 1, id: "12345" }
-			game.playCard("1", testCard, "attack");
+			player.hand.push(testCard);
+			game.playCard("1", "12345", "attack");
 			game.setTarget("1", game.board.player1board.attack);
 
 			assert.deepEqual(game.board.player1board.attack, testCard);

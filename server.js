@@ -30,12 +30,12 @@ io.on('connection', function(socket) {
 		const player = game.getPlayer(socket.id);
 		
 		if (card.cost > player.currentMana || game.phase.currentPlayer.id !== socket.id) { 
-			socket.emit('message', "you do not have enough mana")
+			socket.emit('message', "you do not have enough mana");
 			return;
 		}
 
 		if (game.phase.currentPlayer.id !== socket.id || (game.phase.step !== "first_main" && game.phase.step !== "second_main")) {
-			socket.emit('message', "you can only play cards in your first and second main step")
+			socket.emit('message', "you can only play cards in your first and second main step");
 			return;
 		}
 

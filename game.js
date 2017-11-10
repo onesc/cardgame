@@ -98,18 +98,11 @@ class Game {
 		this.players = [];
 		this.eventListeners =  [
 			{
-				text: 'whenever a player draws a card they take 1 damage',
-				trigger: 'draw',
-				callback: (trigger) => {
-					this.damagePlayer(trigger.playerID, 1);
-				}	
-			},
-			{
 				text: 'whenever a player plays a card they gain two life',
 				trigger: 'play',
-				callback: (trigger) => {
-					this.damagePlayer(trigger.playerID, -2);
-				}	
+				callback: (game, trigger) => {
+					game.damagePlayer(trigger.playerID, -2);
+				}
 			}
 		]; 
 	}
@@ -117,7 +110,7 @@ class Game {
 	broadcastEvent(event) { // TEST THIS
 		this.eventListeners.forEach(listener => {
 			if (listener.trigger === event.name) {
-				listener.callback(event);
+				listener.callback(this, event);
 			}
 		})
 	}
@@ -159,11 +152,14 @@ class Game {
 		this.players = this.players.filter(p => p.id !== id);
 	}
 
-	playCard(playerID, card, pos) {
+	playCard(playerID, cardID, pos) {
 		const player = this.getPlayer(playerID);
+		const card = player.hand.find(c => c.id === cardID);
+
 		player.currentMana -= card.cost;
 		this.board.playCard(playerID, card, pos);
-		player.hand = player.hand.filter(c => c.id !== card.id);
+		if (card.eventListeners) { this.eventListeners = this.eventListeners.concat(card.eventListeners) };
+		player.hand = player.hand.filter(c => c.id !== cardID);
 		this.broadcastEvent({name: 'play', playerID: playerID});
 	}
 
