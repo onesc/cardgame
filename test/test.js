@@ -48,18 +48,14 @@ describe('Game', function() {
 
 		it('can damage players', () => {
 			const player = game.getPlayer("1");
-			assert.equal(player.hp, 50);
+			assert.equal(player.hp, 20);
 			game.damagePlayer("1", 1)
-			assert.equal(player.hp, 49);
+			assert.equal(player.hp, 19);
 		});
 
 		it('can cycle through the phases', () => {
 			assert.equal(game.phase.currentPlayer.id, "1");
-			assert.equal(game.phase.step, "draw");
-			game.nextPhase();
 			assert.equal(game.phase.step, "first_main");
-			game.nextPhase();
-			assert.equal(game.phase.step, "combat");
 			game.nextPhase();
 			assert.equal(game.phase.step, "second_main");
 			game.nextPhase();

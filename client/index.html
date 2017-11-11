@@ -31,8 +31,6 @@
    	var socket = io();
     var g, me, opponent, myBoard, opponentBoard;
 
-
-
     var makeCard = function(cardData) {
         var card = $("<div class='card'>");
         card.append($("<span class='name'>").text(cardData.name));
@@ -46,11 +44,9 @@
     }
 
     var makeTargetableCard = function(cardData) {
-    	var card = makeCard(cardData);
-    	card.click(() => { 
+		return makeCard(cardData).click(() => { 
 			socket.emit('setTarget', cardData)
 		});
-		return card;
     }
 
    	$("#play").click(function() {
@@ -81,8 +77,8 @@
 		$('.turn').text(me.id === g.phase.currentPlayer.id ? "YOUR" : "your OPPONENTS")
 		$('.step').text(g.phase.step)
 
-		$('.opponent').css("border", "none");
-		$('.player').css("border", "none");
+		$('.opponent').html(null).css("border", "none");
+		$('.player').html(null).css("border", "none");
 
 		if (opponentBoard.attack) {
 			$('.opponent.attack').html(makeTargetableCard(opponentBoard.attack))
@@ -97,15 +93,15 @@
 			if (me.target && me.target.id === opponentBoard.defend.id) { $('.opponent.support').css("border", "5px solid red")};
 		};
 		if (myBoard.attack) { 
-			$('.player.attack').html(makeTargetableCard(myBoard.attack))
+			$('.player.attack').html(makeCard(myBoard.attack))
 			if (me.target && me.target.id === myBoard.attack.id) { $('.player.attack').css("border", "5px solid red")};
 		};
 		if (myBoard.defend) { 
-			$('.player.defend').html(makeTargetableCard(myBoard.defend));
+			$('.player.defend').html(makeCard(myBoard.defend));
 			if (me.target && me.target.id === myBoard.defend.id) { $('.player.defend').css("border", "5px solid red")};
 		};
 		if (myBoard.support) {
-			$('.player.support').html(makeTargetableCard(myBoard.support))
+			$('.player.support').html(makeCard(myBoard.support))
 			if (me.target && me.target.id === myBoard.support.id) { $('.player.support').css("border", "5px solid red")};
 		};
 
