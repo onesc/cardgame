@@ -2,8 +2,9 @@
 	"name": "socketing",
 	"version": "1.0.0",
 	"description": "",
-	"main": "server.js",
+	"main": "./server/server.js",
 	"scripts": {
+    "less": "less-watch-compiler client client",
 		"test": "nyc --reporter=html mocha"
 	},
 	"author": "",

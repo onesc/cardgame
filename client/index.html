@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<title>Hello world</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+  	<script src = "/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <div class = "info">
+		<button id="play">Play</button>
+	    <div> It is <span class = "turn"></span> <span class = "step"></span> step</div>
+	    <div>Your HP is <span class = "yourhp hp"></span>Your Mana is <span class = "yourmana mana"></span></div>
+	    <div>Your enemies HP is <span class = "enemyhp hp"></span></div>
+	    <button id="next">Next Phase</button>
+    </div>
+
+    <div class="board">
+		<div class="opponent attack wrapper"></div>
+		<div class="opponent defend wrapper"></div>
+		<div class="opponent support wrapper"></div>    
+		<div class="player attack wrapper"></div>
+		<div class="player defend wrapper"></div>
+		<div class="player support wrapper"></div>
+	</div>
+
+	<div id = "hand"></div>
+</body>
+
+<script>
+   	var socket = io();
+    var g, me, opponent, myBoard, opponentBoard;
+
+    var makeCard = function(cardData) {
+        var card = $("<div class='card'>");
+        card.append($("<span class='name'>").text(cardData.name));
+        card.append($("<span class='cost'>").text(cardData.cost));
+        card.append($("<img class='image'>").attr("src", cardData.imageSrc));
+        card.append($("<div class='type'>").text(cardData.type));
+        card.append($("<div class='text'>").text(cardData.text));
+        card.append($("<span class='power'>").text(cardData.power));
+        card.append($("<span class='toughness'>").text(cardData.toughness));
+        return card;
+    }
+
+   	$("#play").click(function() {
+    	socket.emit("enterPlayer");
+    	$("#play").hide()
+  	});
+
+  	$("#next").click(function() {
+    	socket.emit("nextPhase");
+  	});
+
+    socket.on('message', (message) => {
+      window.alert(message)
+    })
+
+  	socket.on('state', function(game) {
+  		if (game.players.length !== 2) { return };
+
+		g = game;
+  		me = game.players.find(function(p){ return p.id === socket.id});
+  		opponent = game.players.find(function(p){ return p.id !== socket.id});
+		myBoard = me.id === g.board.player1.id ? g.board.player1board : g.board.player2board;
+		opponentBoard = opponent.id === g.board.player1.id ? g.board.player1board : g.board.player2board;
+
+  		$('.yourhp').text(me.hp)
+		$('.yourmana').text(me.currentMana)
+  		$('.enemyhp').text(opponent.hp)
+
+		var turnText = me.id === g.phase.currentPlayer.id ? "YOUR" : "your OPPONENTS";
+		$('.turn').text(turnText)
+		$('.step').text(g.phase.step)
+
+		// $('#board').html($('<ul>')
+		//   .append(game.board.map(card => $("<li>").text(card.name))));
+
+		if (opponentBoard.attack) { $('.opponent.attack').html(makeCard(opponentBoard.attack)) };
+		if (opponentBoard.defend) { $('.opponent.defend').html(makeCard(opponentBoard.defend)) };
+		if (opponentBoard.support) { $('.opponent.support').html(makeCard(opponentBoard.support)) };
+		if (myBoard.attack) { $('.player.attack').html(makeCard(myBoard.attack)) };
+		if (myBoard.defend) { $('.player.defend').html(makeCard(myBoard.defend)) };
+		if (myBoard.support) { $('.player.support').html(makeCard(myBoard.support)) };
+
+
+		$('#hand').html(null)
+		me.hand.forEach(cardData => {
+	        $('#hand').append(makeCard(cardData));
+		})
+    });
+  </script>
+</html>

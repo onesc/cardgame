@@ -1,10 +1,12 @@
 var app = require('express')();
 var http = require('http').Server(app);
+var express = require('express')
 var io = require('socket.io')(http);
 var { Game } = require('./game.js')
 
+app.use(express.static('client'))
 app.get('/', function(req, res) {
-   res.sendFile(__dirname + '/index.html');
+   res.sendFile('/client/index.html');
 });
 
 const game = new Game;
