@@ -31,6 +31,8 @@
    	var socket = io();
     var g, me, opponent, myBoard, opponentBoard;
 
+
+
     var makeCard = function(cardData) {
         var card = $("<div class='card'>");
         card.append($("<span class='name'>").text(cardData.name));
@@ -41,6 +43,14 @@
         card.append($("<span class='power'>").text(cardData.power));
         card.append($("<span class='toughness'>").text(cardData.toughness));
         return card;
+    }
+
+    var makeTargetableCard = function(cardData) {
+    	var card = makeCard(cardData);
+    	card.click(() => { 
+			socket.emit('setTarget', cardData)
+		});
+		return card;
     }
 
    	$("#play").click(function() {
@@ -68,25 +78,56 @@
   		$('.yourhp').text(me.hp)
 		$('.yourmana').text(me.currentMana)
   		$('.enemyhp').text(opponent.hp)
-
-		var turnText = me.id === g.phase.currentPlayer.id ? "YOUR" : "your OPPONENTS";
-		$('.turn').text(turnText)
+		$('.turn').text(me.id === g.phase.currentPlayer.id ? "YOUR" : "your OPPONENTS")
 		$('.step').text(g.phase.step)
 
-		// $('#board').html($('<ul>')
-		//   .append(game.board.map(card => $("<li>").text(card.name))));
+		$('.opponent').css("border", "none");
+		$('.player').css("border", "none");
 
-		if (opponentBoard.attack) { $('.opponent.attack').html(makeCard(opponentBoard.attack)) };
-		if (opponentBoard.defend) { $('.opponent.defend').html(makeCard(opponentBoard.defend)) };
-		if (opponentBoard.support) { $('.opponent.support').html(makeCard(opponentBoard.support)) };
-		if (myBoard.attack) { $('.player.attack').html(makeCard(myBoard.attack)) };
-		if (myBoard.defend) { $('.player.defend').html(makeCard(myBoard.defend)) };
-		if (myBoard.support) { $('.player.support').html(makeCard(myBoard.support)) };
+		if (opponentBoard.attack) {
+			$('.opponent.attack').html(makeTargetableCard(opponentBoard.attack))
+			if (me.target && me.target.id === opponentBoard.attack.id) { $('.opponent.attack').css("border", "5px solid red")};
+ 		};
+		if (opponentBoard.defend) { 
+			$('.opponent.defend').html(makeTargetableCard(opponentBoard.defend))
+			if (me.target && me.target.id === opponentBoard.defend.id) { $('.opponent.defend').css("border", "5px solid red")};
+		};
+		if (opponentBoard.support) { 
+			$('.opponent.support').html(makeTargetableCard(opponentBoard.support))
+			if (me.target && me.target.id === opponentBoard.defend.id) { $('.opponent.support').css("border", "5px solid red")};
+		};
+		if (myBoard.attack) { 
+			$('.player.attack').html(makeTargetableCard(myBoard.attack))
+			if (me.target && me.target.id === myBoard.attack.id) { $('.player.attack').css("border", "5px solid red")};
+		};
+		if (myBoard.defend) { 
+			$('.player.defend').html(makeTargetableCard(myBoard.defend));
+			if (me.target && me.target.id === myBoard.defend.id) { $('.player.defend').css("border", "5px solid red")};
+		};
+		if (myBoard.support) {
+			$('.player.support').html(makeTargetableCard(myBoard.support))
+			if (me.target && me.target.id === myBoard.support.id) { $('.player.support').css("border", "5px solid red")};
+		};
 
-
-		$('#hand').html(null)
+		$('#hand').html(null);
 		me.hand.forEach(cardData => {
-	        $('#hand').append(makeCard(cardData));
+			var card = makeCard(cardData);
+			
+			if (me.currentMana >= cardData.cost) {
+				card.append($("<img class ='card-button' src='https://d30y9cdsu7xlg0.cloudfront.net/png/177984-200.png'/>").click(() => {
+					socket.emit('playCard', cardData.id, "attack")
+				}))
+
+				card.append($("<img class ='card-button' src='https://marketplace.canva.com/MACTGcDb8qQ/1/thumbnail_large/canva-shield-icon-MACTGcDb8qQ.png'/>").click(() => {
+					socket.emit('playCard', cardData.id, "defend")
+				}))
+
+				card.append($("<img class ='card-button' src='http://www.myokucenter.com/wp-content/uploads/2011/11/sword-297x300.jpg'/>").click(() => {
+					socket.emit('playCard', cardData.id, "support")
+				}))
+			}
+
+	        $('#hand').append(card);
 		})
     });
   </script>

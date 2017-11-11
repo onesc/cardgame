@@ -3,7 +3,7 @@ var Deck = require('./deck.js')
 class Player {
 	constructor(id) {
 		this.id = id;
-		this.hp = 50;
+		this.hp = 20;
 		this.currentMana = 1;
 		this.manaPool = 1;
 		this.deck = new Deck;
@@ -27,7 +27,7 @@ class Phase {
 		this.player1 = player1;
 		this.player2 = player2;
 		this.currentPlayer = player1;
-		this.step = "draw"
+		this.step = "first_main"
 	}
 
 	next() {
@@ -64,6 +64,7 @@ class Board {
 
 	playCard(playerID, card, pos) {
 		const board = playerID === this.player1.id ? this.player1board : this.player2board;
+		card.position = pos;
 		board[pos] = card;
 	}
 
@@ -126,10 +127,12 @@ class Game {
 			this.playerDraw(this.phase.currentPlayer.id);
 			this.phase.currentPlayer.manaPool += 1;
 			this.phase.currentPlayer.currentMana = this.phase.currentPlayer.manaPool;
+			this.nextPhase();
 		}
 
 		if (this.phase.step === "combat") {
 			this.combat(this.phase.currentPlayer.id);
+			this.nextPhase();
 		}
 	}
 
