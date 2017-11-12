@@ -13,7 +13,6 @@ describe('Game', function() {
 		it('doesnt start game with one player', function() {
 			game.addPlayer("1");
 			assert.isNotOk(game.phase);
-			assert.isNotOk(game.board);
 		});
 
 		it('starts game with two players', function() {
@@ -21,10 +20,10 @@ describe('Game', function() {
 			game.addPlayer("2");
 			assert.equal(game.players.length, 2);
 			assert.isOk(game.phase);
-			assert.isOk(game.board);
 		});
 
 		it('can add and remove players', function() {
+			assert.equal(game.players.length, 0);
 			game.addPlayer("1");
 			assert.equal(game.players.length, 1);
 			game.removePlayer("1");
@@ -54,14 +53,14 @@ describe('Game', function() {
 		});
 
 		it('can cycle through the phases', () => {
-			assert.equal(game.phase.currentPlayer.id, "1");
-			assert.equal(game.phase.step, "first_main");
+			assert.equal(game.currentPlayer.id, "1");
+			assert.equal(game.phase, "first_main");
 			game.nextPhase();
-			assert.equal(game.phase.step, "second_main");
+			assert.equal(game.phase, "second_main");
 			game.nextPhase();
-			assert.equal(game.phase.step, "end");
+			assert.equal(game.phase, "end");
 			game.nextPhase();
-			assert.equal(game.phase.currentPlayer.id, "2");
+			assert.equal(game.currentPlayer.id, "2");
 		})
 
 		it('drawing adds 1 card to the players hand length', () => {
@@ -73,14 +72,13 @@ describe('Game', function() {
 
 		it('playing cards subtracts mana, adds it to board and removes from hand', () => {
 			const player = game.getPlayer("1");
-			const testCard = { name: "Test Card", cost: 1, id: "12345" }
+			const testCard = { name: "Test Card", cost: 1, id: "12345", type: "Creature" }
 			player.hand.push(testCard);
-
 			assert.equal(player.currentMana, 1);
-			game.playCard("1", "12345", "attack");
 
+			game.playCard("1", "12345", "attack");
 			assert.equal(player.currentMana, 0)
-			assert.deepEqual(game.board.player1board, {
+			assert.deepEqual(player.board, {
 				attack: testCard, 
 				defend: null,
 				support: null
@@ -98,16 +96,16 @@ describe('Game', function() {
 
 		it('killing creatures clears target and board', () => {
 			const player = game.getPlayer("1");
-			const testCard = { name: "Test Card", cost: 1, id: "12345" }
+			const testCard = { name: "Test Card", cost: 1, id: "12345", type: "Creature" }
 			player.hand.push(testCard);
 			game.playCard("1", "12345", "attack");
-			game.setTarget("1", game.board.player1board.attack);
+			game.setTarget("1", player.board.attack);
 
-			assert.deepEqual(game.board.player1board.attack, testCard);
-			assert.deepEqual(player.target, game.board.player1board.attack);
+			assert.deepEqual(player.board.attack, testCard);
+			assert.deepEqual(player.target, player.board.attack);
 
 			game.killCreature("12345");
-			assert.deepEqual(game.board.player1board.attack, null);
+			assert.deepEqual(player.board.attack, null);
 			assert.deepEqual(player.target, null);
 		})
 
@@ -122,7 +120,7 @@ describe('Game', function() {
 				}
 			}];
 
-			const testCard = { name: "Test Card", cost: 1, id: "12345", eventListeners: eventListeners};
+			const testCard = { name: "Test Card", cost: 1, id: "12345", eventListeners: eventListeners, type: "Creature"};
 			player.hand.push(testCard);
 
 			assert.equal(game.eventListeners.length, 0);

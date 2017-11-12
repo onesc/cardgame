@@ -11,6 +11,7 @@ class Player {
 		this.hand = this.deck.cards.splice(0, 3);
 		this.target = null;
 		this.type = "Player";
+		this.board = new Board()
 	}
 
 	draw(amount = 1) {
@@ -19,78 +20,27 @@ class Player {
 				this.hand.push(this.deck.cards.shift());
 			}
 		}
-	} 
-}
-
-class Phase {
-	constructor(player1, player2) {
-		this.player1 = player1;
-		this.player2 = player2;
-		this.currentPlayer = player1;
-		this.step = "first_main"
-	}
-
-	next() {
-		switch(this.step) {
-		    case "draw":
-		    	this.step = "first_main"
-		        break;
-		    case "first_main":
-		    	this.step = "combat"
-		        break;
-		    case "combat":
-		    	this.step = "second_main"
-		        break;
-		    case "second_main":
-		    	this.step = "end"
-		        break;
-		    case "end":
-		    	this.step = "draw"
-		    	this.currentPlayer = this.currentPlayer === this.player1 ? this.player2 : this.player1;
-		        break;
-		    default:
-		        return;
-		}
 	}
 }
 
 class Board {
-	constructor(player1, player2) {
-		this.player1 = player1; // TODO: remove these and just access through player1board 
-		this.player2 = player2;
-		this.player1board = {attack: null, defend: null, support: null};
-		this.player2board = {attack: null, defend: null, support: null};
-	}
-
-	playCard(playerID, card, pos) {
-		const board = playerID === this.player1.id ? this.player1board : this.player2board;
-		card.position = pos;
-		board[pos] = card;
-	}
-
-	getBoard(playerID) {
-		const board = playerID === this.player1.id ? this.player1board : this.player2board;
-		return board;
-		// TODO: do this properly
+	constructor() {
+		this.attack = null;
+		this.defend = null;
+		this.support = null;
 	}
 
 	getCreature(creatureID) {
-		if (this.player1board.attack && creatureID === this.player1board.attack.id) { return this.player1board.attack }
-		if (this.player1board.defend && creatureID === this.player1board.defend.id) { return this.player1board.defend }
-		if (this.player1board.support && creatureID === this.player1board.support.id) { return this.player1board.support }
-		if (this.player2board.attack && creatureID === this.player2board.attack.id) { return this.player2board.attack }
-		if (this.player2board.defend && creatureID === this.player2board.defend.id) { return this.player2board.defend }
-		if (this.player2board.support && creatureID === this.player2board.support.id) { return this.player2board.support }
+		if (this.attack && creatureID === this.attack.id) { return this.attack }
+		if (this.defend && creatureID === this.defend.id) { return this.defend }
+		if (this.support && creatureID === this.support.id) { return this.support }
 		return null;
 	}
 
 	removeCreature(creatureID) {
-		if (this.player1board.attack && creatureID === this.player1board.attack.id) { this.player1board.attack = null }
-		if (this.player1board.defend && creatureID === this.player1board.defend.id) { this.player1board.defend = null }
-		if (this.player1board.support && creatureID === this.player1board.support.id) { this.player1board.support = null }
-		if (this.player2board.attack && creatureID === this.player2board.attack.id) { this.player2board.attack = null }
-		if (this.player2board.defend && creatureID === this.player2board.defend.id) { this.player2board.defend = null }
-		if (this.player2board.support && creatureID === this.player2board.support.id) { this.player2board.support = null }
+		if (this.attack && creatureID === this.attack.id) { this.attack = null }
+		if (this.defend && creatureID === this.defend.id) { this.defend = null }
+		if (this.support && creatureID === this.support.id) { this.support = null }
 	}
 }
 
@@ -121,25 +71,48 @@ class Game {
 		return this.players.find(p => p.id !== playerID);
 	}
 
+	next() {
+		switch(this.phase) {
+		    case "draw":
+		    	this.phase = "first_main"
+		        break;
+		    case "first_main":
+		    	this.phase = "combat"
+		        break;
+		    case "combat":
+		    	this.phase = "second_main"
+		        break;
+		    case "second_main":
+		    	this.phase = "end"
+		        break;
+		    case "end":
+		    	this.phase = "draw"
+		    	this.currentPlayer = this.currentPlayer.id === this.players[0].id ? this.players[1] : this.players[0];
+		        break;
+		    default:
+		        return;
+		}
+	}
+
 	nextPhase() {
-		this.phase.next()
-		if (this.phase.step === "draw") {
-			this.playerDraw(this.phase.currentPlayer.id);
-			this.phase.currentPlayer.manaPool += 1;
-			this.phase.currentPlayer.currentMana = this.phase.currentPlayer.manaPool;
+		this.next()
+		if (this.phase === "draw") {
+			this.playerDraw(this.currentPlayer.id);
+			this.currentPlayer.manaPool += 1;
+			this.currentPlayer.currentMana = this.currentPlayer.manaPool;
 			this.nextPhase();
 		}
 
-		if (this.phase.step === "combat") {
-			this.combat(this.phase.currentPlayer.id);
+		if (this.phase === "combat") {
+			this.combat();
 			this.nextPhase();
 		}
 	}
 
 	startGame() {
 		if (this.players.length === 2) {
-			this.phase = new Phase(this.players[0], this.players[1]);
-			this.board = new Board(this.players[0], this.players[1]);
+			this.phase = "first_main"
+			this.currentPlayer = this.players[0];
 		}
 	}
 
@@ -152,14 +125,17 @@ class Game {
 		const card = player.hand.find(c => c.id === cardID);
 
 		player.currentMana -= card.cost;
-		this.board.playCard(playerID, card, pos);
-		if (card.eventListeners) {
-			const listeners = card.eventListeners.map(l => {
-				return {...l, cardID: cardID, playerID: playerID};
-			})
-			this.eventListeners = this.eventListeners.concat(listeners) 
-		};
 
+		if (card.type === "Creature") {
+			player.board[pos] = card;
+			if (card.eventListeners) {
+				const listeners = card.eventListeners.map(l => {
+					return {...l, cardID: cardID, playerID: playerID};
+				})
+				this.eventListeners = this.eventListeners.concat(listeners) 
+			};
+		}
+		
 		player.hand = player.hand.filter(c => c.id !== cardID);
 		this.broadcastEvent({name: 'play', playerID: playerID});
 	}
@@ -170,7 +146,7 @@ class Game {
 	}
 
 	damageCreature(creatureID, damage) {
-		const creature = this.board.getCreature(creatureID);// damage creature and then broadcast event of creature being damaged
+		const creature = this.players[0].board.getCreature(creatureID) || this.players[1].board.getCreature(creatureID);
 		creature.toughness -= damage;
 		if (creature.toughness <= 0) { 
 			this.killCreature(creatureID);
@@ -178,7 +154,8 @@ class Game {
 	}
 
 	killCreature(creatureID) {
-		const creature = this.board.removeCreature(creatureID); 
+		this.players[0].board.removeCreature(creatureID); 
+		this.players[1].board.removeCreature(creatureID);
 		if (this.players[0].target && this.players[0].target.id === creatureID) {this.players[0].target = null};
 		if (this.players[1].target && this.players[1].target.id === creatureID) {this.players[1].target = null};
 		this.eventListeners = this.eventListeners.filter(l => l.cardID !== creatureID);
@@ -195,15 +172,15 @@ class Game {
 		this.broadcastEvent({name: "draw", playerID: playerID});
 	}
 
-	combat(attackerID) { // TEST THIS.. EVENTUALLY
-		const attacker = this.getPlayer(attackerID);
-		const atkBoard = this.board.getBoard(attackerID);
-		const opponent = this.getOpponent(attackerID);
-		const defBoard = this.board.getBoard(opponent.id);
+	combat() { // TEST THIS.. EVENTUALLY
+		const attacker = this.currentPlayer;
+		const atkBoard = attacker.board;
+		const defender = this.getOpponent(attacker.id);
+		const defBoard = defender.board;
 
 		if (atkBoard.attack) {
 			if (attacker.target === null || attacker.target.type === "Player") {
-				this.damagePlayer(opponent.id, atkBoard.attack.power);
+				this.damagePlayer(defender.id, atkBoard.attack.power);
 			} else if (attacker.target.type === "Creature") {
 				this.damageCreature(attacker.target.id, atkBoard.attack.power)
 
@@ -221,7 +198,7 @@ class Game {
 				this.damageCreature(defBoard.defend.id, atkBoard.defend.power + supportBuff);
 				this.damageCreature(atkBoard.defend.id, defPwr);
 			} else {
-				this.damagePlayer(opponent.id, atkBoard.defend.power + supportBuff);
+				this.damagePlayer(defender.id, atkBoard.defend.power + supportBuff);
 			}
 		}
 	}

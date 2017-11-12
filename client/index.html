@@ -68,41 +68,39 @@
 		g = game;
   		me = game.players.find(function(p){ return p.id === socket.id});
   		opponent = game.players.find(function(p){ return p.id !== socket.id});
-		myBoard = me.id === g.board.player1.id ? g.board.player1board : g.board.player2board;
-		opponentBoard = opponent.id === g.board.player1.id ? g.board.player1board : g.board.player2board;
 
   		$('.yourhp').text(me.hp)
 		$('.yourmana').text(me.currentMana)
   		$('.enemyhp').text(opponent.hp)
-		$('.turn').text(me.id === g.phase.currentPlayer.id ? "YOUR" : "your OPPONENTS")
-		$('.step').text(g.phase.step)
+		$('.turn').text(me.id === g.currentPlayer.id ? "YOUR" : "your OPPONENTS")
+		$('.step').text(g.phase)
 
 		$('.opponent').html(null).css("border", "none");
 		$('.player').html(null).css("border", "none");
 
-		if (opponentBoard.attack) {
-			$('.opponent.attack').html(makeTargetableCard(opponentBoard.attack))
-			if (me.target && me.target.id === opponentBoard.attack.id) { $('.opponent.attack').css("border", "5px solid red")};
+		if (opponent.board.attack) {
+			$('.opponent.attack').html(makeTargetableCard(opponent.board.attack))
+			if (me.target && me.target.id === opponent.board.attack.id) { $('.opponent.attack').css("border", "5px solid red")};
  		};
-		if (opponentBoard.defend) { 
-			$('.opponent.defend').html(makeTargetableCard(opponentBoard.defend))
-			if (me.target && me.target.id === opponentBoard.defend.id) { $('.opponent.defend').css("border", "5px solid red")};
+		if (opponent.board.defend) { 
+			$('.opponent.defend').html(makeTargetableCard(opponent.board.defend))
+			if (me.target && me.target.id === opponent.board.defend.id) { $('.opponent.defend').css("border", "5px solid red")};
 		};
-		if (opponentBoard.support) { 
-			$('.opponent.support').html(makeTargetableCard(opponentBoard.support))
-			if (me.target && me.target.id === opponentBoard.defend.id) { $('.opponent.support').css("border", "5px solid red")};
+		if (opponent.board.support) { 
+			$('.opponent.support').html(makeTargetableCard(opponent.board.support))
+			if (me.target && me.target.id === opponent.board.defend.id) { $('.opponent.support').css("border", "5px solid red")};
 		};
-		if (myBoard.attack) { 
-			$('.player.attack').html(makeCard(myBoard.attack))
-			if (me.target && me.target.id === myBoard.attack.id) { $('.player.attack').css("border", "5px solid red")};
+		if (me.board.attack) { 
+			$('.player.attack').html(makeCard(me.board.attack))
+			if (me.target && me.target.id === me.board.attack.id) { $('.player.attack').css("border", "5px solid red")};
 		};
-		if (myBoard.defend) { 
-			$('.player.defend').html(makeCard(myBoard.defend));
-			if (me.target && me.target.id === myBoard.defend.id) { $('.player.defend').css("border", "5px solid red")};
+		if (me.board.defend) { 
+			$('.player.defend').html(makeCard(me.board.defend));
+			if (me.target && me.target.id === me.board.defend.id) { $('.player.defend').css("border", "5px solid red")};
 		};
-		if (myBoard.support) {
-			$('.player.support').html(makeCard(myBoard.support))
-			if (me.target && me.target.id === myBoard.support.id) { $('.player.support').css("border", "5px solid red")};
+		if (me.board.support) {
+			$('.player.support').html(makeCard(me.board.support))
+			if (me.target && me.target.id === me.board.support.id) { $('.player.support').css("border", "5px solid red")};
 		};
 
 		$('#hand').html(null);

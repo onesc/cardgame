@@ -36,12 +36,12 @@ io.on('connection', function(socket) {
 			return;
 		}
 
-		if (game.phase.currentPlayer.id !== socket.id) { 
+		if (game.currentPlayer.id !== socket.id) { 
 			socket.emit('message', "it is not your turn"); 
 			return;
 		}
 
-		if (game.phase.currentPlayer.id !== socket.id || (game.phase.step !== "first_main" && game.phase.step !== "second_main")) {
+		if (game.currentPlayer.id !== socket.id || (game.phase !== "first_main" && game.phase !== "second_main")) {
 			socket.emit('message', "you can only play cards in your first and second main step"); 
 			return;
 		}
@@ -51,7 +51,7 @@ io.on('connection', function(socket) {
 	});
 
 	socket.on('nextPhase', () => {
-		if (game.phase.currentPlayer.id !== socket.id) {
+		if (game.currentPlayer.id !== socket.id) {
 			socket.emit('message', "it is not your turn");
 			return;
 		}
