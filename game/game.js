@@ -1,48 +1,4 @@
-var Deck = require('./deck.js')
-
-class Player {
-	constructor(id) {
-		this.id = id;
-		this.hp = 20;
-		this.currentMana = 1;
-		this.manaPool = 1;
-		this.deck = new Deck;
-		this.deck.shuffle();
-		this.hand = this.deck.cards.splice(0, 3);
-		this.target = null;
-		this.type = "Player";
-		this.board = new Board()
-	}
-
-	draw(amount = 1) {
-		for (let i  = 0; i < amount; i++) {
-			if (this.deck.cards.length > 0) {
-				this.hand.push(this.deck.cards.shift());
-			}
-		}
-	}
-}
-
-class Board {
-	constructor() {
-		this.attack = null;
-		this.defend = null;
-		this.support = null;
-	}
-
-	getCreature(creatureID) {
-		if (this.attack && creatureID === this.attack.id) { return this.attack }
-		if (this.defend && creatureID === this.defend.id) { return this.defend }
-		if (this.support && creatureID === this.support.id) { return this.support }
-		return null;
-	}
-
-	removeCreature(creatureID) {
-		if (this.attack && creatureID === this.attack.id) { this.attack = null }
-		if (this.defend && creatureID === this.defend.id) { this.defend = null }
-		if (this.support && creatureID === this.support.id) { this.support = null }
-	}
-}
+var Player = require('./player.js')
 
 class Game {
 	constructor() {

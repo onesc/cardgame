@@ -2,7 +2,7 @@ var app = require('express')();
 var http = require('http').Server(app);
 var express = require('express')
 var io = require('socket.io')(http);
-var { Game } = require('./game.js')
+var { Game } = require('./game/game.js')
 
 app.use(express.static('client'))
 app.get('/', function(req, res) {
