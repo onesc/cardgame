@@ -91,6 +91,11 @@ class Game {
 				this.eventListeners = this.eventListeners.concat(listeners) 
 			};
 		}
+
+
+		if (card.type === "Spell") {
+			card.effect(this, player);
+		}
 		
 		player.hand = player.hand.filter(c => c.id !== cardID);
 		this.broadcastEvent({name: 'play', playerID: playerID});
@@ -101,20 +106,19 @@ class Game {
 		player.hp -= damage;
 	}
 
-	damageCreature(creatureID, damage) {
-		const creature = this.players[0].board.getCreature(creatureID) || this.players[1].board.getCreature(creatureID);
+	damageCreature(creature, damage) {
 		creature.toughness -= damage;
 		if (creature.toughness <= 0) { 
-			this.killCreature(creatureID);
+			this.killCreature(creature);
 		}
 	}
 
-	killCreature(creatureID) {
-		this.players[0].board.removeCreature(creatureID); 
-		this.players[1].board.removeCreature(creatureID);
-		if (this.players[0].target && this.players[0].target.id === creatureID) {this.players[0].target = null};
-		if (this.players[1].target && this.players[1].target.id === creatureID) {this.players[1].target = null};
-		this.eventListeners = this.eventListeners.filter(l => l.cardID !== creatureID);
+	killCreature(creature) {
+		this.players[0].board.removeCreature(creature.id); 
+		this.players[1].board.removeCreature(creature.id);
+		if (this.players[0].target && this.players[0].target.id === creature.id) {this.players[0].target = null};
+		if (this.players[1].target && this.players[1].target.id === creature.id) {this.players[1].target = null};
+		this.eventListeners = this.eventListeners.filter(l => l.cardID !== creature.id);
 	}
 
 	setTarget(playerID, target) {
@@ -138,10 +142,10 @@ class Game {
 			if (attacker.target === null || attacker.target.type === "Player") {
 				this.damagePlayer(defender.id, atkBoard.attack.power);
 			} else if (attacker.target.type === "Creature") {
-				this.damageCreature(attacker.target.id, atkBoard.attack.power)
+				this.damageCreature(attacker.target, atkBoard.attack.power)
 
 				if (attacker.target !== null) { // if creature didnt die after combat
-					this.damageCreature(atkBoard.attack.id, attacker.target.power); // return damage
+					this.damageCreature(atkBoard.attack, attacker.target.power); // return damage
 				}
 			}
 		}
@@ -151,8 +155,8 @@ class Game {
 
 			if (defBoard.defend) {
 				const defPwr = defBoard.defend.power;
-				this.damageCreature(defBoard.defend.id, atkBoard.defend.power + supportBuff);
-				this.damageCreature(atkBoard.defend.id, defPwr);
+				this.damageCreature(defBoard.defend, atkBoard.defend.power + supportBuff);
+				this.damageCreature(atkBoard.defend, defPwr);
 			} else {
 				this.damagePlayer(defender.id, atkBoard.defend.power + supportBuff);
 			}

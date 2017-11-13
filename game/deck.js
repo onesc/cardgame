@@ -49,7 +49,14 @@ const cards = [
 		cost: 1, 
 		type: 'Spell', 
 		text: "deal 1 damage to all enemies",
-		imageSrc: "https://hearthstone.gamepedia.com/media/hearthstone.gamepedia.com/thumb/d/de/Arcane_Explosion_full.jpg/500px-Arcane_Explosion_full.jpg?version=30063a3f70632fad015cf27e27f9b5e3"
+		imageSrc: "https://hearthstone.gamepedia.com/media/hearthstone.gamepedia.com/thumb/d/de/Arcane_Explosion_full.jpg/500px-Arcane_Explosion_full.jpg?version=30063a3f70632fad015cf27e27f9b5e3",
+		effect: (game, caster) => {
+			var opponent = game.getOpponent(caster.id);
+			opponent.board.attack && game.damageCreature(opponent.board.attack, 1);
+			opponent.board.defend && game.damageCreature(opponent.board.defend, 1);
+			opponent.board.support && game.damageCreature(opponent.board.support, 1);
+			game.damagePlayer(opponent.id, 1);
+		}
 	},
 	{
 		name: 'Cute Spiderling', 
@@ -65,7 +72,17 @@ const cards = [
 		cost: 3, 
 		type: 'Spell', 
 		text: "Deal 4 damage to target enemy",
-		imageSrc: "https://hearthstone.gamepedia.com/media/hearthstone.gamepedia.com/thumb/c/cf/Lava_Burst_full.jpg/498px-Lava_Burst_full.jpg?version=c14e366de641391b7772f3b3cc167afe"
+		imageSrc: "https://hearthstone.gamepedia.com/media/hearthstone.gamepedia.com/thumb/c/cf/Lava_Burst_full.jpg/498px-Lava_Burst_full.jpg?version=c14e366de641391b7772f3b3cc167afe",
+		effect: (game, caster) => {
+			if (caster.target === null) {
+				var opponent = game.getOpponent(caster.id);
+				game.damagePlayer(opponent.id, 4);
+			} else if (caster.target.type === "Player") {
+			 	game.damagePlayer(caster.target.id, 4);
+			} else if (caster.target.type === "Creature") {
+				game.damageCreature(caster.target, 4)
+			}		
+		}
 	}
 ]
 

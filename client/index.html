@@ -107,7 +107,7 @@
 		me.hand.forEach(cardData => {
 			var card = makeCard(cardData);
 			
-			if (me.currentMana >= cardData.cost) {
+			if (cardData.type === "Creature" && me.currentMana >= cardData.cost) {
 				card.append($("<img class ='card-button' src='https://d30y9cdsu7xlg0.cloudfront.net/png/177984-200.png'/>").click(() => {
 					socket.emit('playCard', cardData.id, "attack")
 				}))
@@ -121,6 +121,12 @@
 				}))
 			}
 
+			if (cardData.type === "Spell" && me.currentMana >= cardData.cost) {
+				card.append($("<button> cast </button>").click(() => {
+					socket.emit('playCard', cardData.id);
+				}));
+			}	
+			
 	        $('#hand').append(card);
 		})
     });
