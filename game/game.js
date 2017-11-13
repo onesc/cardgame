@@ -4,6 +4,7 @@ class Game {
 	constructor() {
 		this.players = [];
 		this.eventListeners = []; 
+		this.log = [];
 	}
 
 	broadcastEvent(event) { // TEST THIS
@@ -67,8 +68,15 @@ class Game {
 
 	startGame() {
 		if (this.players.length === 2) {
+			this.players[0].init();
+			this.players[1].init();
 			this.phase = "first_main"
 			this.currentPlayer = this.players[0];
+			this.log = ["Welcome to the realm"];
+
+			if (this.players[0].name === this.players[1].name) {
+				this.players[1].name = this.players[1].name + " The Second"
+			}
 		}
 	}
 
@@ -81,6 +89,8 @@ class Game {
 		const card = player.hand.find(c => c.id === cardID);
 
 		player.currentMana -= card.cost;
+
+		this.log.push(`${player.name} casts a ${card.name} ${ pos ? " in the " + pos +  " position" : ""}`);
 
 		if (card.type === "Creature") {
 			player.board[pos] = card;
@@ -98,6 +108,7 @@ class Game {
 		}
 		
 		player.hand = player.hand.filter(c => c.id !== cardID);
+
 		this.broadcastEvent({name: 'play', playerID: playerID});
 	}
 
@@ -107,19 +118,21 @@ class Game {
 	}
 
 	damageCreature(creature, damage) {
-		console.log("damaging creature")
 		creature.toughness -= damage;
+		this.log.push(`${creature.name} takes ${damage} damage`);
+
 		if (creature.toughness <= 0) { 
 			this.killCreature(creature);
 		}
 	}
 
 	killCreature(creature) {
+		this.log.push(`${creature.name} died`);
 		this.players[0].board.removeCreature(creature.id); 
 		this.players[1].board.removeCreature(creature.id);
 		if (this.players[0].target && this.players[0].target.id === creature.id) {this.players[0].target = null};
 		if (this.players[1].target && this.players[1].target.id === creature.id) {this.players[1].target = null};
-		this.eventListeners = this.eventListeners.filter(l => l.cardID !== creature.id);
+		this.eventListeners = this.eventListeners.filter(l => l.cardID !== creature.id);	
 	}
 
 	setTarget(playerID, target) {
@@ -131,6 +144,7 @@ class Game {
 	playerDraw(playerID) {
 		const player = this.getPlayer(playerID);
 		player.draw();
+		this.log.push(`${player.name} draws a card`);
 		this.broadcastEvent({name: "draw", playerID: playerID});
 	}
 
@@ -147,7 +161,7 @@ class Game {
 				this.damageCreature(attacker.target, atkBoard.attack.power)
 
 				if (attacker.target !== null) { // if creature didnt die after combat
-					this.damageCreature(atkBoard.attack, creature.power); // return damage
+					this.damageCreature(atkBoard.attack, attacker.target.power); // return damage
 				}
 			}
 		}
