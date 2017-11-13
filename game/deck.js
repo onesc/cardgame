@@ -32,15 +32,18 @@ const cards = [
 		name: 'Noob Mage', 
 		cost: 2, 
 		type: 'Creature', 
-		text: "whenever a player draws a card they take 1 damage", 
+		text: "whenever your opponent draws a card they take 2 damag", 
 		power: 1, 
 		toughness: 1,
 		imageSrc: "https://orig00.deviantart.net/4fe1/f/2011/343/6/a/apprentice_magician_by_dolphinboy2000-d4in0ie.jpg",
 		eventListeners: [{
-			text: 'whenever a player draws a card they take 1 damage',
+			text: 'whenever your opponent draws a card they take 2 damage',
 			trigger: 'draw',
-			callback: (game, trigger) => {
-				game.damagePlayer(trigger.playerID, 1);
+			callback: (game, trigger, ownerID) => {
+				var opponent = game.getOpponent(ownerID);
+				if (trigger.playerID === opponent.id) {
+					game.damagePlayer(opponent.id, 2);
+				}
 			}	
 		}]
 	},

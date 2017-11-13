@@ -9,7 +9,7 @@ class Game {
 	broadcastEvent(event) { // TEST THIS
 		this.eventListeners.forEach(listener => {
 			if (listener.trigger === event.name) {
-				listener.callback(this, event);
+				listener.callback(this, event, listener.playerID);
 			}
 		})
 	}
@@ -107,6 +107,7 @@ class Game {
 	}
 
 	damageCreature(creature, damage) {
+		console.log("damaging creature")
 		creature.toughness -= damage;
 		if (creature.toughness <= 0) { 
 			this.killCreature(creature);
@@ -123,7 +124,8 @@ class Game {
 
 	setTarget(playerID, target) {
 		const player = this.getPlayer(playerID);
-		player.target = target;
+		const realTarget = target.type === "Creature" ? this.players[0].board.getCreature(target.id) || this.players[1].board.getCreature(target.id) : this.getPlayer(target.id);
+		player.target = realTarget;
 	}
 
 	playerDraw(playerID) {
@@ -145,7 +147,7 @@ class Game {
 				this.damageCreature(attacker.target, atkBoard.attack.power)
 
 				if (attacker.target !== null) { // if creature didnt die after combat
-					this.damageCreature(atkBoard.attack, attacker.target.power); // return damage
+					this.damageCreature(atkBoard.attack, creature.power); // return damage
 				}
 			}
 		}
