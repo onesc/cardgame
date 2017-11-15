@@ -42,7 +42,7 @@ const cards = [
 			callback: (game, trigger, ownerID) => {
 				var opponent = game.getOpponent(ownerID);
 				if (trigger.playerID === opponent.id) {
-					game.damagePlayer(opponent.id, 2);
+					game.damagePlayer(opponent.id, 2, {name: "Noob Mage trigger", type: "Trigger"});
 				}
 			}	
 		}]
@@ -58,7 +58,7 @@ const cards = [
 			opponent.board.attack && game.damageCreature(opponent.board.attack, 1, {name: 'Arcane Explosion', type: 'Spell'});
 			opponent.board.defend && game.damageCreature(opponent.board.defend, 1, {name: 'Arcane Explosion', type: 'Spell'});
 			opponent.board.support && game.damageCreature(opponent.board.support, 1, {name: 'Arcane Explosion', type: 'Spell'});
-			game.damagePlayer(opponent.id, 1);
+			game.damagePlayer(opponent.id, 1, {name: "Arcane Explosion", type: "Spell"});
 		}
 	},
 	{
@@ -104,7 +104,7 @@ const cards = [
 		power: 2,
 		toughness: 1,
 		type: 'Creature',
-		text: '',
+		text: 'Gains +1 / +1 when it kills a creature',
 		imageSrc: "http://i.imgur.com/Ljg8f4W.png",
 		eventListeners: [{
 			text: 'Troll Headhunter gains +1 / +1 each time it kills a creature',
@@ -117,7 +117,25 @@ const cards = [
 				}
 			}	
 		}]
+	},
+	{
+		name: 'Bone Mage',
+		cost: 3,
+		power: 2,
+		toughness: 2,
+		type: 'Creature',
+		text: 'Whenever a creature dies deal 2 damage to your opponent',
+		imageSrc: "https://vignette2.wikia.nocookie.net/dragonsdogmaquest/images/d/dd/Skeleton-sorcerer.jpg/revision/latest?cb=20140808082339",
+		eventListeners: [{
+			text: '',
+			trigger: 'death',
+			callback: (game, event, listener) => {
+				const opponent = game.getOpponent(listener.playerID);
+				game.damagePlayer(opponent.id, 2, {name: "Bone Mage trigger", type: "Trigger"});
+			}	
+		}]
 	}
+
 
 ]
 

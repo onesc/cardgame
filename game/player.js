@@ -14,7 +14,7 @@ class Player {
 		this.manaPool = 1;
 		this.deck = new Deck;
 		this.deck.shuffle();
-		this.hand = this.deck.cards.splice(0, 3);
+		this.hand = this.deck.cards.splice(0, 5);
 		this.board = new Board()
 		this.type = "Player";
 

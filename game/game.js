@@ -112,9 +112,10 @@ class Game {
 		this.broadcastEvent({name: 'play', playerID: playerID});
 	}
 
-	damagePlayer(playerID, damage) {
+	damagePlayer(playerID, damage, source) {
 		const player = this.getPlayer(playerID);
 		player.hp -= damage;
+		this.log.push(`${source.name} deals ${damage} damage to ${player.name}`);
 	}
 
 	getCreature(creatureID) {
@@ -123,7 +124,7 @@ class Game {
 
 	damageCreature(creature, damage, source) {
 		creature.toughness -= damage;
-		this.log.push(`${creature.name} takes ${damage} damage from ${source.name}`);
+		this.log.push(`${source.name} deals ${damage} damage to ${creature.name}`);
 
 		if (creature.toughness <= 0) { 
 			this.killCreature(creature, source);
@@ -161,7 +162,7 @@ class Game {
 
 		if (atkBoard.attack) {
 			if (attacker.target === null || attacker.target.type === "Player") {
-				this.damagePlayer(defender.id, atkBoard.attack.power);
+				this.damagePlayer(defender.id, atkBoard.attack.power, defender);
 			} else if (attacker.target.type === "Creature") {
 				this.damageCreature(attacker.target, atkBoard.attack.power, atkBoard.attack)
 
