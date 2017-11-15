@@ -53,9 +53,9 @@ const cards = [
 		eventListeners: [{
 			text: 'whenever your opponent draws a card they take 2 damage',
 			trigger: 'draw',
-			callback: (game, trigger, ownerID) => {
-				var opponent = game.getOpponent(ownerID);
-				if (trigger.playerID === opponent.id) {
+			callback: (game, event, listener) => {
+				var opponent = game.getOpponent(listener.ownerID);
+				if (event.playerID === opponent.id) {
 					game.damagePlayer(opponent.id, 2, {name: "Noob Mage trigger", type: "Trigger"});
 				}
 			}	

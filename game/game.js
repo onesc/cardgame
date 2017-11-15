@@ -143,8 +143,8 @@ class Game {
 		this.log.push(`${creature.name} died`);
 		this.players[0].board.removeCreature(creature.id); 
 		this.players[1].board.removeCreature(creature.id);
-		if (this.players[0].target && this.players[0].target.id === creature.id) {this.players[0].target = null};
-		if (this.players[1].target && this.players[1].target.id === creature.id) {this.players[1].target = null};
+		if (this.players[0].target && this.players[0].target.id === creature.id) {this.players[0].target = this.players[1]};
+		if (this.players[1].target && this.players[1].target.id === creature.id) {this.players[1].target = this.players[0]};
 		this.eventListeners = this.eventListeners.filter(l => l.cardID !== creature.id);
 		this.broadcastEvent({name: "death", creature: creature, source: source});	
 	}
@@ -180,7 +180,7 @@ class Game {
 			} else if (attacker.target.type === "Creature") {
 				this.damageCreature(attacker.target, atkBoard.attack.power, atkBoard.attack)
 
-				if (attacker.target !== null) { // if creature didnt die after combat
+				if (attacker.target !== null && attacker.target.type !== "Player") { // if creature didnt die after combat
 					this.damageCreature(atkBoard.attack, attacker.target.power, attacker.target); // return damage
 				}
 			}

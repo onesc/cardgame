@@ -5,6 +5,9 @@
     <link rel="stylesheet" type="text/css" href="style.css">
   	<script src = "/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script >/*! (C) WebReflection Mit Style License */
+		var CircularJSON=function(JSON,RegExp){var specialChar="~",safeSpecialChar="\\x"+("0"+specialChar.charCodeAt(0).toString(16)).slice(-2),escapedSafeSpecialChar="\\"+safeSpecialChar,specialCharRG=new RegExp(safeSpecialChar,"g"),safeSpecialCharRG=new RegExp(escapedSafeSpecialChar,"g"),safeStartWithSpecialCharRG=new RegExp("(?:^|([^\\\\]))"+escapedSafeSpecialChar),indexOf=[].indexOf||function(v){for(var i=this.length;i--&&this[i]!==v;);return i},$String=String;function generateReplacer(value,replacer,resolve){var inspect=!!replacer,path=[],all=[value],seen=[value],mapp=[resolve?specialChar:"[Circular]"],last=value,lvl=1,i,fn;if(inspect){fn=typeof replacer==="object"?function(key,value){return key!==""&&replacer.indexOf(key)<0?void 0:value}:replacer}return function(key,value){if(inspect)value=fn.call(this,key,value);if(key!==""){if(last!==this){i=lvl-indexOf.call(all,this)-1;lvl-=i;all.splice(lvl,all.length);path.splice(lvl-1,path.length);last=this}if(typeof value==="object"&&value){if(indexOf.call(all,value)<0){all.push(last=value)}lvl=all.length;i=indexOf.call(seen,value);if(i<0){i=seen.push(value)-1;if(resolve){path.push((""+key).replace(specialCharRG,safeSpecialChar));mapp[i]=specialChar+path.join(specialChar)}else{mapp[i]=mapp[0]}}else{value=mapp[i]}}else{if(typeof value==="string"&&resolve){value=value.replace(safeSpecialChar,escapedSafeSpecialChar).replace(specialChar,safeSpecialChar)}}}return value}}function retrieveFromPath(current,keys){for(var i=0,length=keys.length;i<length;current=current[keys[i++].replace(safeSpecialCharRG,specialChar)]);return current}function generateReviver(reviver){return function(key,value){var isString=typeof value==="string";if(isString&&value.charAt(0)===specialChar){return new $String(value.slice(1))}if(key==="")value=regenerate(value,value,{});if(isString)value=value.replace(safeStartWithSpecialCharRG,"$1"+specialChar).replace(escapedSafeSpecialChar,safeSpecialChar);return reviver?reviver.call(this,key,value):value}}function regenerateArray(root,current,retrieve){for(var i=0,length=current.length;i<length;i++){current[i]=regenerate(root,current[i],retrieve)}return current}function regenerateObject(root,current,retrieve){for(var key in current){if(current.hasOwnProperty(key)){current[key]=regenerate(root,current[key],retrieve)}}return current}function regenerate(root,current,retrieve){return current instanceof Array?regenerateArray(root,current,retrieve):current instanceof $String?current.length?retrieve.hasOwnProperty(current)?retrieve[current]:retrieve[current]=retrieveFromPath(root,current.split(specialChar)):root:current instanceof Object?regenerateObject(root,current,retrieve):current}function stringifyRecursion(value,replacer,space,doNotResolve){return JSON.stringify(value,generateReplacer(value,replacer,!doNotResolve),space)}function parseRecursion(text,reviver){return JSON.parse(text,generateReviver(reviver))}return{stringify:stringifyRecursion,parse:parseRecursion}}(JSON,RegExp);
+	</script>
   </head>
   <body>
     <div class = "info">
@@ -17,7 +20,9 @@
 
     </div>
 
-		<div class="opponent crown-wrapper"> <span class = "enemyhp hp"></span></span><span class = "enemymana mana"></span><span class="enemyname username"></span></div>
+	<div class="opponent crown-wrapper"> 
+		<span class = "enemyhp hp"></span></span><span class = "enemymana mana"></span><span class="enemyname username"></span>
+	</div>
 
     <div class="board">
 		<div class="opponent attack wrapper"></div>
@@ -27,7 +32,10 @@
 		<div class="player defend wrapper"></div>
 		<div class="player support wrapper"></div>
 	</div>
-	<div class="player crown-wrapper"><span class = "yourhp hp"></span></span><span class = "yourmana mana"></span><span class="yourname username"></span>
+
+	<div class="player crown-wrapper">
+		<span class = "yourhp hp"></span></span><span class = "yourmana mana"></span><span class="yourname username"></span>
+	</div>
 
 	<div id = "hand"></div>
 </body>
@@ -68,11 +76,11 @@
     })
 
   	socket.on('state', function(game) {
-  		if (game.players.length !== 2) { return };
+		g = CircularJSON.parse(game);
+  		if (g.players.length !== 2) { return };
 
-		g = game;
-  		me = game.players.find(function(p){ return p.id === socket.id});
-  		opponent = game.players.find(function(p){ return p.id !== socket.id});
+  		me = g.players.find(function(p){ return p.id === socket.id});
+  		opponent = g.players.find(function(p){ return p.id !== socket.id});
 
   		$('.enemyhp').text(opponent.hp)
   		$('.enemymana').text(opponent.currentMana)
@@ -87,6 +95,11 @@
 		$('.step').text(g.phase)
 		$('.board .opponent').html(null).css("border", "none");
 		$('.board .player').html(null).css("border", "none");
+		$('.opponent.crown-wrapper').css("border", "none");
+		
+		$('.opponent.crown-wrapper').click(() => {
+			socket.emit('setTarget', opponent);
+		})
 
 		if (opponent.board.attack) {
 			$('.opponent.attack').html(makeTargetableCard(opponent.board.attack))
@@ -112,6 +125,10 @@
 			$('.player.support').html(makeCard(me.board.support))
 			if (me.target && me.target.id === me.board.support.id) { $('.player.support').css("border", "5px solid red")};
 		};
+
+		if (me.target && me.target.id === opponent.id) {
+			$('.opponent.crown-wrapper').css("border", "5px solid red");
+		}
 
 		$('#hand').html(null);
 		me.hand.forEach(cardData => {

@@ -3,6 +3,7 @@ var http = require('http').Server(app);
 var express = require('express')
 var io = require('socket.io')(http);
 var { Game } = require('./game/game.js')
+ jc = require('circular-json');
 
 app.use(express.static('client'))
 app.get('/', function(req, res) {
@@ -14,8 +15,8 @@ let games = []
 
 io.on('connection', function(socket) {
   	const emitGameState = (game) => {
-		io.sockets.connected[game.players[0].id].emit('state', game);
-		io.sockets.connected[game.players[1].id].emit('state', game);
+		io.sockets.connected[game.players[0].id].emit('state', jc.stringify(game));
+		io.sockets.connected[game.players[1].id].emit('state', jc.stringify(game));
   	}
 
 	socket.on('enterPlayer', () => {

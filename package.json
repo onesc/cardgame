@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "server.js",
 	"scripts": {
-    "less": "less-watch-compiler client client",
+		"less": "less-watch-compiler client client",
 		"test": "nyc --reporter=html mocha"
 	},
 	"author": "",
