@@ -8,6 +8,7 @@ class Game {
 		this.eventListeners = []; 
 		this.log = [];
 		this.nextCombatDisabled = false;
+		this.newCardID = 1000;
 		this.id = id;
 		id = id + 1;
 	}
@@ -95,9 +96,12 @@ class Game {
 		player.currentMana -= card.cost;
 
 		this.log.push(`${player.name} casts a ${card.name} ${ pos ? " in the " + pos +  " position" : ""}`);
+		this.broadcastEvent({name: 'play', playerID: playerID});
 
 		if (card.type === "Creature") {
 			player.board[pos] = card;
+			player.board[pos].origin = Object.assign({}, card);
+
 			if (card.eventListeners) {
 				const listeners = card.eventListeners.map(l => {
 					return {...l, cardID: cardID, playerID: playerID};
@@ -113,7 +117,7 @@ class Game {
 		
 		player.hand = player.hand.filter(c => c.id !== cardID);
 
-		this.broadcastEvent({name: 'play', playerID: playerID});
+		
 	}
 
 	damagePlayer(playerID, damage, source) {

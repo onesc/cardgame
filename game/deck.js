@@ -81,6 +81,24 @@ const cards = [
 		imageSrc: "https://ih1.redbubble.net/image.120538650.5332/flat,800x800,075,f.jpg"
 	},
 	{
+		name: "Arcane Menagerie",
+		cost: 3,
+		type: "Creature",
+		power: 0,
+		toughness: 5,
+		imageSrc: "http://3.bp.blogspot.com/-oLKvUEgLnkE/T0QPWmhuSrI/AAAAAAAAARI/G0usK7iebWc/s1600/fantasy_art_scenery_wallpaper_ognian_bonev_02.jpg",
+		text: "Draw a card whenever you play a creature",
+		eventListeners: [{
+			text: 'Draw a card whenever you play a creature',
+			trigger: 'play',
+			callback: (game, event, listener) => {
+				if (event.playerID === listener.playerID) {
+					game.playerDraw(event.playerID)
+				}
+			}	
+		}]
+	},
+	{
 		name: 'Lava Strike', 
 		cost: 3, 
 		type: 'Spell', 
@@ -107,7 +125,23 @@ const cards = [
 			game.playerDraw(caster.id);
 			game.playerDraw(caster.id);
 		}
-	}, 
+	},
+	{
+		name: 'Clone',
+		cost: 2, 
+		type: 'Spell',
+		text: 'Put a copy of target creature in to your hand. It costs only one mana to cast.',
+		imageSrc: "http://uforeview.tripod.com/cjimages/teleportation.jpg",
+		effect: (game, caster) => {
+			if (caster.target.type === "Creature") {
+				let newCard = Object.assign({}, caster.target.origin)
+				newCard.cost = 1;
+				newCard.id = game.newCardID;
+				caster.hand.push(newCard);
+				game.newCardID = game.newCardID + 1;
+			}
+		}
+	},
 	{
 		name: 'Troll Headhunter',
 		cost: 3,
