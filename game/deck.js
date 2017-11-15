@@ -11,6 +11,20 @@ const cards = [
 		imageSrc: "http://2.bp.blogspot.com/_fsMA9Dc4tnA/S-GbvGeOkiI/AAAAAAAAADg/sjDJhE6sF7A/s320/vasily.png"
 	},
 	{
+		name: 'Arcane Explosion', 
+		cost: 1, 
+		type: 'Spell', 
+		text: "deal 1 damage to all enemies",
+		imageSrc: "https://hearthstone.gamepedia.com/media/hearthstone.gamepedia.com/thumb/d/de/Arcane_Explosion_full.jpg/500px-Arcane_Explosion_full.jpg?version=30063a3f70632fad015cf27e27f9b5e3",
+		effect: (game, caster) => {
+			var opponent = game.getOpponent(caster.id);
+			opponent.board.attack && game.damageCreature(opponent.board.attack, 1, {name: 'Arcane Explosion', type: 'Spell'});
+			opponent.board.defend && game.damageCreature(opponent.board.defend, 1, {name: 'Arcane Explosion', type: 'Spell'});
+			opponent.board.support && game.damageCreature(opponent.board.support, 1, {name: 'Arcane Explosion', type: 'Spell'});
+			game.damagePlayer(opponent.id, 1, {name: "Arcane Explosion", type: "Spell"});
+		}
+	},
+	{
 		name: 'Rabid Troll', 
 		cost: 2, 
 		type: 'Creature', 
@@ -48,17 +62,13 @@ const cards = [
 		}]
 	},
 	{
-		name: 'Arcane Explosion', 
-		cost: 1, 
-		type: 'Spell', 
-		text: "deal 1 damage to all enemies",
-		imageSrc: "https://hearthstone.gamepedia.com/media/hearthstone.gamepedia.com/thumb/d/de/Arcane_Explosion_full.jpg/500px-Arcane_Explosion_full.jpg?version=30063a3f70632fad015cf27e27f9b5e3",
-		effect: (game, caster) => {
-			var opponent = game.getOpponent(caster.id);
-			opponent.board.attack && game.damageCreature(opponent.board.attack, 1, {name: 'Arcane Explosion', type: 'Spell'});
-			opponent.board.defend && game.damageCreature(opponent.board.defend, 1, {name: 'Arcane Explosion', type: 'Spell'});
-			opponent.board.support && game.damageCreature(opponent.board.support, 1, {name: 'Arcane Explosion', type: 'Spell'});
-			game.damagePlayer(opponent.id, 1, {name: "Arcane Explosion", type: "Spell"});
+		name: 'Smoke Screen',
+		cost: 2,
+		type: 'Spell',
+		text: "The next combat phase is skipped",
+		imageSrc: "https://www.ecbc.army.mil/news/2012/images/HX-Smoke.jpg",
+		effect: (game) => {
+			game.nextCombatDisabled = true;
 		}
 	},
 	{

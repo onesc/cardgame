@@ -5,6 +5,7 @@ class Game {
 		this.players = [];
 		this.eventListeners = []; 
 		this.log = [];
+		this.nextCombatDisabled = false;
 	}
 
 	broadcastEvent(event) { // TEST THIS
@@ -155,6 +156,12 @@ class Game {
 	}
 
 	combat() { // TEST THIS.. EVENTUALLY
+		if (this.nextCombatDisabled === true) {
+			this.nextCombatDisabled = false;
+			this.log.push(`${this.currentPlayer.name}'s' combat phase has been skipped`)
+			return;
+		}
+
 		const attacker = this.currentPlayer;
 		const atkBoard = attacker.board;
 		const defender = this.getOpponent(attacker.id);
