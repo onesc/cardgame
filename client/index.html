@@ -74,16 +74,14 @@
   		me = game.players.find(function(p){ return p.id === socket.id});
   		opponent = game.players.find(function(p){ return p.id !== socket.id});
 
-  		$('.yourhp').text(me.hp)
-		$('.yourmana').text(me.currentMana)
   		$('.enemyhp').text(opponent.hp)
   		$('.enemymana').text(opponent.currentMana)
 
+		$('.yourhp').text(me.hp)
+		$('.yourmana').text(me.currentMana)
+
 		$('.yourname').text(me.name)
 		$('.enemyname').text(opponent.name)
-
-
-
 
 		$('.turn').text(me.id === g.currentPlayer.id ? "YOUR" : "your OPPONENTS")
 		$('.step').text(g.phase)

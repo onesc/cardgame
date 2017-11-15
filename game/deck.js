@@ -55,9 +55,9 @@ const cards = [
 		imageSrc: "https://hearthstone.gamepedia.com/media/hearthstone.gamepedia.com/thumb/d/de/Arcane_Explosion_full.jpg/500px-Arcane_Explosion_full.jpg?version=30063a3f70632fad015cf27e27f9b5e3",
 		effect: (game, caster) => {
 			var opponent = game.getOpponent(caster.id);
-			opponent.board.attack && game.damageCreature(opponent.board.attack, 1);
-			opponent.board.defend && game.damageCreature(opponent.board.defend, 1);
-			opponent.board.support && game.damageCreature(opponent.board.support, 1);
+			opponent.board.attack && game.damageCreature(opponent.board.attack, 1, {name: 'Arcane Explosion', type: 'Spell'});
+			opponent.board.defend && game.damageCreature(opponent.board.defend, 1, {name: 'Arcane Explosion', type: 'Spell'});
+			opponent.board.support && game.damageCreature(opponent.board.support, 1, {name: 'Arcane Explosion', type: 'Spell'});
 			game.damagePlayer(opponent.id, 1);
 		}
 	},
@@ -83,10 +83,42 @@ const cards = [
 			} else if (caster.target.type === "Player") {
 			 	game.damagePlayer(caster.target.id, 4);
 			} else if (caster.target.type === "Creature") {
-				game.damageCreature(caster.target, 4)
+				game.damageCreature(caster.target, 4, {name: 'Lava Strike', type: 'Spell'})
 			}		
 		}
+	},
+	{
+		name: 'Prescient Vision',
+		cost: 3,
+		type: 'Spell',
+		text: 'Draw two cards',
+		imageSrc: "http://i0.kym-cdn.com/entries/icons/mobile/000/022/266/brain.jpg",
+		effect: (game, caster) => {
+			game.playerDraw(caster.id);
+			game.playerDraw(caster.id);
+		}
+	}, 
+	{
+		name: 'Troll Headhunter',
+		cost: 3,
+		power: 2,
+		toughness: 1,
+		type: 'Creature',
+		text: '',
+		imageSrc: "http://i.imgur.com/Ljg8f4W.png",
+		eventListeners: [{
+			text: 'Troll Headhunter gains +1 / +1 each time it kills a creature',
+			trigger: 'death',
+			callback: (game, event, listener) => {
+				if (event.source.id === listener.cardID) {
+					const troll = game.getCreature(listener.cardID);
+					troll.power = troll.power += 1;
+					troll.toughness = troll.toughness += 1;
+				}
+			}	
+		}]
 	}
+
 ]
 
 const card = (data) => {
