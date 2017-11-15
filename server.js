@@ -9,26 +9,40 @@ app.get('/', function(req, res) {
    res.sendFile('/client/index.html');
 });
 
-const game = new Game;
+let players = [];
+let games = []
 
 io.on('connection', function(socket) {
-  	const emitGameState = () => {
-  		io.sockets.emit('state', game);
+  	const emitGameState = (game) => {
+		io.sockets.connected[game.players[0].id].emit('state', game);
+		io.sockets.connected[game.players[1].id].emit('state', game);
   	}
 
 	socket.on('enterPlayer', () => {
-		game.addPlayer(socket.id)
 		console.log(socket.id + ' has connected')
-		emitGameState();
+		players.push(socket.id);
+
+		if (players.length === 2) {
+			const game = new Game();
+			game.addPlayer(players[0]);
+			game.addPlayer(players[1])
+			game.startGame()
+			games.push(game)
+			emitGameState(game);
+			players = [];
+		}
+
 	})
  
 	socket.on('disconnect', function () {
 		console.log(socket.id + ' has disconnected')
-		game.removePlayer(socket.id)
-		emitGameState();
+		// games[0].removePlayer(socket.id)
+		// emitGameState(game);
 	});
 	
 	socket.on('playCard', (card, pos) => {
+		const game = games.find(g => g.players[0].id === socket.id || g.players[1].id === socket.id);
+
 		const player = game.getPlayer(socket.id);
 		
 		if (card.cost > player.currentMana) { 
@@ -47,25 +61,29 @@ io.on('connection', function(socket) {
 		}
 
 		game.playCard(socket.id, card, pos)
-		emitGameState();
+		emitGameState(game);
 	});
 
 	socket.on('nextPhase', () => {
+		const game = games.find(g => g.players[0].id === socket.id || g.players[1].id === socket.id);
+
 		if (game.currentPlayer.id !== socket.id) {
 			socket.emit('message', "it is not your turn");
 			return;
 		}
 
 		game.nextPhase();
-		emitGameState();
+		emitGameState(game);
 	})
 
 	socket.on('setTarget', (target) => {
+		const game = games.find(g => g.players[0].id === socket.id || g.players[1].id === socket.id);
+
 		game.setTarget(socket.id, target);
-		emitGameState();
+		emitGameState(game);
 	})
 
-	emitGameState();
+	// emitGameState(game);
 });
 
 

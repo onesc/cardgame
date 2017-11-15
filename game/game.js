@@ -1,11 +1,15 @@
 var Player = require('./player.js')
 
+let id = 0;
+
 class Game {
 	constructor() {
 		this.players = [];
 		this.eventListeners = []; 
 		this.log = [];
 		this.nextCombatDisabled = false;
+		this.id = id;
+		id = id + 1;
 	}
 
 	broadcastEvent(event) { // TEST THIS
@@ -18,7 +22,6 @@ class Game {
 
 	addPlayer(id)  {
 		this.players.push(new Player(id));
-		this.startGame();
 	}
 
 	getPlayer(playerID) {
@@ -169,7 +172,7 @@ class Game {
 
 		if (atkBoard.attack) {
 			if (attacker.target === null || attacker.target.type === "Player") {
-				this.damagePlayer(defender.id, atkBoard.attack.power, defender);
+				this.damagePlayer(defender.id, atkBoard.attack.power, atkBoard.attack);
 			} else if (attacker.target.type === "Creature") {
 				this.damageCreature(attacker.target, atkBoard.attack.power, atkBoard.attack)
 
