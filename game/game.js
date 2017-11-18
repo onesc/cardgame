@@ -116,8 +116,6 @@ class Game {
 		}
 		
 		player.hand = player.hand.filter(c => c.id !== cardID);
-
-		
 	}
 
 	damagePlayer(playerID, damage, source) {

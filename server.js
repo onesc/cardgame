@@ -1,9 +1,9 @@
-var app = require('express')();
-var http = require('http').Server(app);
-var express = require('express')
-var io = require('socket.io')(http);
-var { Game } = require('./game/game.js')
- jc = require('circular-json');
+const app = require('express')();
+const http = require('http').Server(app);
+const express = require('express')
+const io = require('socket.io')(http);
+const { Game } = require('./game/game.js')
+const cj = require('circular-json');
 
 app.use(express.static('client'))
 app.get('/', function(req, res) {
@@ -15,8 +15,8 @@ let games = []
 
 io.on('connection', function(socket) {
   	const emitGameState = (game) => {
-		io.sockets.connected[game.players[0].id].emit('state', jc.stringify(game));
-		io.sockets.connected[game.players[1].id].emit('state', jc.stringify(game));
+		io.sockets.connected[game.players[0].id].emit('state', cj.stringify(game));
+		io.sockets.connected[game.players[1].id].emit('state', cj.stringify(game));
   	}
 
 	socket.on('enterPlayer', () => {
