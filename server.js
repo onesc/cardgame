@@ -15,8 +15,10 @@ let games = []
 
 io.on('connection', function(socket) {
   	const emitGameState = (game) => {
-		io.sockets.connected[game.players[0].id].emit('state', cj.stringify(game));
-		io.sockets.connected[game.players[1].id].emit('state', cj.stringify(game));
+  		if (game.players[0] && game.players[1]) {
+  			io.sockets.connected[game.players[0].id].emit('state', cj.stringify(game));
+			io.sockets.connected[game.players[1].id].emit('state', cj.stringify(game));
+  		}
   	}
 
 	socket.on('enterPlayer', () => {
