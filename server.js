@@ -15,7 +15,7 @@ let games = []
 
 io.on('connection', function(socket) {
   	const emitGameState = (game) => {
-  		if (game.players[0] && game.players[1]) {
+  		if (io.sockets.connected[game.players[0].id] && io.sockets.connected[game.players[1].id]) {
   			io.sockets.connected[game.players[0].id].emit('state', cj.stringify(game));
 			io.sockets.connected[game.players[1].id].emit('state', cj.stringify(game));
   		}
