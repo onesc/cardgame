@@ -92,6 +92,7 @@ class Game {
 	playCard(playerID, cardID, pos) {
 		const player = this.getPlayer(playerID);
 		const card = player.hand.find(c => c.id === cardID);
+		if (card.cost > player.currentMana) { return }
 
 		player.currentMana -= card.cost;
 
