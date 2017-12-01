@@ -44,6 +44,10 @@
    	var socket = io();
     var g, me, opponent, myBoard, opponentBoard;
 
+    socket.emit("enterPlayer");
+	$("#play").hide()
+
+
     var makeCard = function(cardData) {
         var card = $("<div class='card'>");
         card.append($("<span class='name'>").text(cardData.name));
