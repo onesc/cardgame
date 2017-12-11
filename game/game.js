@@ -105,7 +105,7 @@ class Game {
 
 			if (card.eventListeners) {
 				const listeners = card.eventListeners.map(l => {
-					return {...l, cardID: cardID, playerID: playerID};
+					return {...l, cardID: cardID, playerID: playerID}
 				})
 				this.eventListeners = this.eventListeners.concat(listeners) 
 			};
@@ -161,7 +161,20 @@ class Game {
 		this.broadcastEvent({name: "draw", playerID: playerID});
 	}
 
-	combat() { // TEST THIS.. EVENTUALLY
+	creatureAttack(attackingCreature, defendingCreature) {
+		const supportBuff = this.currentPlayer.board.defend  
+							&& this.currentPlayer.board.defend.id === attackingCreature.id 
+							&& this.currentPlayer.board.support ? 
+							this.currentPlayer.board.support.power : 0;
+
+		this.damageCreature(defendingCreature, attackingCreature.power + supportBuff, attackingCreature);
+
+		if (attackingCreature.keywords.includes("Deathtouch") && defendingCreature.toughness > 0) { 
+			this.killCreature(defendingCreature, attackingCreature)	
+		}
+	}
+
+	combat() { 
 		if (this.nextCombatDisabled === true) {
 			this.nextCombatDisabled = false;
 			this.log.push(`${this.currentPlayer.name}'s' combat phase has been skipped`)
@@ -177,22 +190,21 @@ class Game {
 			if (attacker.target === null || attacker.target.type === "Player") {
 				this.damagePlayer(defender.id, atkBoard.attack.power, atkBoard.attack);
 			} else if (attacker.target.type === "Creature") {
-				this.damageCreature(attacker.target, atkBoard.attack.power, atkBoard.attack)
+				this.creatureAttack(atkBoard.attack, attacker.target)
 
 				if (attacker.target !== null && attacker.target.type !== "Player") { // if creature didnt die after combat
-					this.damageCreature(atkBoard.attack, attacker.target.power, attacker.target); // return damage
+					this.creatureAttack(attacker.target, atkBoard.attack); // return the attack
 				}
 			}
 		}
 
 		if (atkBoard.defend) {
-			const supportBuff = atkBoard.support !== null ? atkBoard.support.power : 0; 
-
 			if (defBoard.defend) {
-				const defPwr = defBoard.defend.power;
-				this.damageCreature(defBoard.defend, atkBoard.defend.power + supportBuff, atkBoard.defend);
-				this.damageCreature(atkBoard.defend, defPwr, defBoard.defend);
+				const defendingCreature = defBoard.defend;
+				this.creatureAttack(atkBoard.defend, defBoard.defend);
+				this.creatureAttack(defendingCreature, atkBoard.defend);
 			} else {
+				const supportBuff = atkBoard.support !== null ? atkBoard.support.power : 0; 
 				this.damagePlayer(defender.id, atkBoard.defend.power + supportBuff, atkBoard.defend);
 			}
 		}
