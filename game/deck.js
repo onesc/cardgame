@@ -131,9 +131,9 @@ const cards = [
 		text: "Deal 3 damage to target enemy. Gain 3 life.",
 		imageSrc: "https://hearthstone.gamepedia.com/media/hearthstone.gamepedia.com/thumb/c/cf/Lava_Burst_full.jpg/498px-Lava_Burst_full.jpg?version=c14e366de641391b7772f3b3cc167afe",
 		effect: (game, caster) => {
-			if (caster.target === null && caster.target.type === "Player") {
+			if (caster.target === null || caster.target.type === "Player") {
 				var opponent = game.getOpponent(caster.id);
-				game.damagePlayer(opponent.id, 3);
+				game.damagePlayer(opponent.id, 3, {name: 'Soul Drain', type: 'Spell'});
 			} else if (caster.target.type === "Creature") {
 				game.damageCreature(caster.target, 3, {name: 'Soul Drain', type: 'Spell'})
 			}
@@ -215,6 +215,7 @@ const cards = [
 		power: 1,
 		toughness: 4,
 		type: 'Creature',
+		keywords: [],
 		text: 'Whenever Bone Cannon kills a minion deal 2 damage to your opponent',
 		imageSrc: "https://vignette2.wikia.nocookie.net/dragonsdogmaquest/images/d/dd/Skeleton-sorcerer.jpg/revision/latest?cb=20140808082339",
 		eventListeners: [{
