@@ -92,6 +92,7 @@ class Game {
 	playCard(playerID, cardID, pos) {
 		const player = this.getPlayer(playerID);
 		const card = player.hand.find(c => c.id === cardID);
+		if (card.cost > player.currentMana) { return }
 
 		player.currentMana -= card.cost;
 
@@ -190,7 +191,7 @@ class Game {
 			if (defBoard.defend) {
 				const defPwr = defBoard.defend.power;
 				this.damageCreature(defBoard.defend, atkBoard.defend.power + supportBuff, atkBoard.defend);
-				this.damageCreature(atkBoard.defend, defPwr, atkBoard.defend);
+				this.damageCreature(atkBoard.defend, defPwr, defBoard.defend);
 			} else {
 				this.damagePlayer(defender.id, atkBoard.defend.power + supportBuff, atkBoard.defend);
 			}

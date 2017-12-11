@@ -116,6 +116,23 @@ const cards = [
 		}
 	},
 	{
+		name: 'Soul Drain', 
+		cost: 3, 
+		type: 'Spell', 
+		text: "Deal 3 damage to target enemy. Gain 3 life.",
+		imageSrc: "https://hearthstone.gamepedia.com/media/hearthstone.gamepedia.com/thumb/c/cf/Lava_Burst_full.jpg/498px-Lava_Burst_full.jpg?version=c14e366de641391b7772f3b3cc167afe",
+		effect: (game, caster) => {
+			if (caster.target === null && caster.target.type === "Player") {
+				var opponent = game.getOpponent(caster.id);
+				game.damagePlayer(opponent.id, 3);
+			} else if (caster.target.type === "Creature") {
+				game.damageCreature(caster.target, 3, {name: 'Soul Drain', type: 'Spell'})
+			}
+
+			game.damagePlayer(caster.id, -3, {name: 'Soul Drain', type: 'Spell'})
+		}
+	},
+	{
 		name: 'Prescient Vision',
 		cost: 3,
 		type: 'Spell',
@@ -178,9 +195,26 @@ const cards = [
 				game.damagePlayer(opponent.id, 2, {name: "Bone Mage trigger", type: "Trigger"});
 			}	
 		}]
+	},
+	{
+		name: 'Bone Cannon',
+		cost: 3,
+		power: 1,
+		toughness: 4,
+		type: 'Creature',
+		text: 'Whenever Bone Cannon kills a minion deal 2 damage to your opponent',
+		imageSrc: "https://vignette2.wikia.nocookie.net/dragonsdogmaquest/images/d/dd/Skeleton-sorcerer.jpg/revision/latest?cb=20140808082339",
+		eventListeners: [{
+			text: '',
+			trigger: 'death',
+			callback: (game, event, listener) => {
+				if (event.source.id === listener.cardID) {
+					const opponent = game.getOpponent(listener.playerID);
+					game.damagePlayer(opponent.id, 2, {name: "Bone Cannon trigger", type: "Trigger"});
+				}
+			}	
+		}]
 	}
-
-
 ]
 
 const card = (data) => {

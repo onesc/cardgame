@@ -45,10 +45,9 @@ io.on('connection', function(socket) {
 	
 	socket.on('playCard', (card, pos) => {
 		const game = games.find(g => g.players[0].id === socket.id || g.players[1].id === socket.id);
-
 		const player = game.getPlayer(socket.id);
 		
-		if (card.cost > player.currentMana) { 
+		if (card.cost > player.currentMana) {
 			socket.emit('message', "you do not have enough mana"); 
 			return;
 		}
