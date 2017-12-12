@@ -129,6 +129,30 @@ class Game {
 		return this.players[0].board.getCreature(creatureID) || this.players[1].board.getCreature(creatureID);
 	}
 
+	getCreaturesOwner(creatureID) {
+		if (this.players[0].board.getCreature(creatureID)) { 
+			return this.players[0];
+		} else if (this.players[1].board.getCreature(creatureID)) {
+			return this.players[1];
+		} else {
+			console.error("Could not find player for creature with id " + creatureID);
+		}
+	}
+
+	untargetCreature(creatureID) {
+		if (this.players[0].target && this.players[0].target.id === creatureID) {this.players[0].target = this.players[1]};
+		if (this.players[1].target && this.players[1].target.id === creatureID) {this.players[1].target = this.players[0]};
+	}
+
+	bounceCreature(creatureID) {
+		const player = this.getCreaturesOwner(creatureID);
+		const creature = this.getCreature(creatureID);
+		player.hand.push(Object.assign({}, creature.origin));
+		player.board.removeCreature(creatureID);
+		this.untargetCreature(creatureID);
+		this.log.push(`${creature.name} was returned to ${player.name}s hand`);
+	}
+
 	damageCreature(creature, damage, source) {
 		creature.toughness -= damage;
 		this.log.push(`${source.name} deals ${damage} damage to ${creature.name}`);
@@ -142,8 +166,7 @@ class Game {
 		this.log.push(`${creature.name} died`);
 		this.players[0].board.removeCreature(creature.id); 
 		this.players[1].board.removeCreature(creature.id);
-		if (this.players[0].target && this.players[0].target.id === creature.id) {this.players[0].target = this.players[1]};
-		if (this.players[1].target && this.players[1].target.id === creature.id) {this.players[1].target = this.players[0]};
+		this.untargetCreature(creature.id);
 		this.eventListeners = this.eventListeners.filter(l => l.cardID !== creature.id);
 		this.broadcastEvent({name: "death", creature: creature, source: source});	
 	}

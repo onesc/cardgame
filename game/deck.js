@@ -27,6 +27,19 @@ const cards = [
 		}
 	},
 	{
+		name: 'Unsummon', 
+		cost: 1, 
+		type: 'Spell', 
+		text: "Return target creature to its owners hand",
+		keywords: [],
+		imageSrc: "https://hearthstone.gamepedia.com/media/hearthstone.gamepedia.com/thumb/d/de/Arcane_Explosion_full.jpg/500px-Arcane_Explosion_full.jpg?version=30063a3f70632fad015cf27e27f9b5e3",
+		effect: (game, caster) => {
+			if (caster.target.type === "Creature") {
+				game.bounceCreature(caster.target.id);
+			}
+		}
+	},
+	{
 		name: 'Rabid Troll', 
 		cost: 2, 
 		type: 'Creature', 
