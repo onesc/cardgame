@@ -82,6 +82,11 @@ class Game {
 			if (this.players[0].name === this.players[1].name) {
 				this.players[1].name = this.players[1].name + " The Second"
 			}
+
+			this.gameTimer = setInterval(() => {
+				this.currentPlayer.timeRemaining -= 1000;
+				if (this.currentPlayer.timeRemaining <= 0) { this.log.push(this.currentPlayer.name + " is out of time!")}
+			}, 1000)
 		}
 	}
 

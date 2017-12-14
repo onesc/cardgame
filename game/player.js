@@ -17,6 +17,7 @@ class Player {
 		this.hand = this.deck.cards.splice(0, 5);
 		this.board = new Board()
 		this.type = "Player";
+		this.timeRemaining = 600000;
 
 		var rand = Math.random()
 
