@@ -129,9 +129,9 @@ const cards = [
 		effect: (game, caster) => {
 			if (caster.target === null) {
 				var opponent = game.getOpponent(caster.id);
-				game.damagePlayer(opponent.id, 4);
+				game.damagePlayer(opponent.id, 4, {name: 'Lava Strike', type: 'Spell'});
 			} else if (caster.target.type === "Player") {
-			 	game.damagePlayer(caster.target.id, 4);
+			 	game.damagePlayer(caster.target.id, 4), {name: 'Lava Strike', type: 'Spell'};
 			} else if (caster.target.type === "Creature") {
 				game.damageCreature(caster.target, 4, {name: 'Lava Strike', type: 'Spell'})
 			}		
