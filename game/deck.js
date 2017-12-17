@@ -8,6 +8,7 @@ const cards = [
 		text: "", 
 		power: 2, 
 		toughness: 1,
+		targets: 0,
 		keywords: [],
 		imageSrc: "http://2.bp.blogspot.com/_fsMA9Dc4tnA/S-GbvGeOkiI/AAAAAAAAADg/sjDJhE6sF7A/s320/vasily.png"
 	},
@@ -16,6 +17,7 @@ const cards = [
 		cost: 1, 
 		type: 'Spell', 
 		text: "deal 1 damage to all enemies",
+		targets: 0,
 		keywords: [],
 		imageSrc: "https://hearthstone.gamepedia.com/media/hearthstone.gamepedia.com/thumb/d/de/Arcane_Explosion_full.jpg/500px-Arcane_Explosion_full.jpg?version=30063a3f70632fad015cf27e27f9b5e3",
 		effect: (game, caster) => {
@@ -31,6 +33,7 @@ const cards = [
 		cost: 1, 
 		type: 'Spell', 
 		text: "Return target creature to its owners hand",
+		targets: 1,
 		keywords: [],
 		imageSrc: "https://hearthstone.gamepedia.com/media/hearthstone.gamepedia.com/thumb/d/de/Arcane_Explosion_full.jpg/500px-Arcane_Explosion_full.jpg?version=30063a3f70632fad015cf27e27f9b5e3",
 		effect: (game, caster, targets) => {
@@ -44,6 +47,7 @@ const cards = [
 		text: "", 
 		power: 3, 
 		toughness: 2,
+		targets: 0,
 		keywords: [],
 		imageSrc: "http://cdn.shopify.com/s/files/1/1058/6186/products/Painted_TrollwithHammer_grande.jpg?v=1467922553"
 	},
@@ -54,6 +58,7 @@ const cards = [
 		text: "", 
 		power: 1, 
 		toughness: 7,
+		targets: 0,
 		keywords: [],
 		imageSrc: "http://jdillustration.jimmsdesign.co.uk/images/full-scale-image/monster-fat-horror.jpg"
 	},
@@ -64,6 +69,7 @@ const cards = [
 		text: "whenever your opponent draws a card they take 2 damag", 
 		power: 1, 
 		toughness: 1,
+		targets: 0,
 		keywords: [],
 		imageSrc: "https://orig00.deviantart.net/4fe1/f/2011/343/6/a/apprentice_magician_by_dolphinboy2000-d4in0ie.jpg",
 		eventListeners: [{
@@ -82,6 +88,7 @@ const cards = [
 		cost: 2,
 		type: 'Spell',
 		text: "The next combat phase is skipped",
+		targets: 0,
 		keywords: [],
 		imageSrc: "https://www.ecbc.army.mil/news/2012/images/HX-Smoke.jpg",
 		effect: (game) => {
@@ -93,6 +100,7 @@ const cards = [
 		cost: 3, 
 		type: 'Creature', 
 		text: "Deathtouch",
+		targets: 0,
 		keywords: ["Deathtouch"],
 		power: 1, 
 		toughness: 1,
@@ -104,6 +112,7 @@ const cards = [
 		type: "Creature",
 		power: 0,
 		toughness: 5,
+		targets: 0,
 		keywords: [],
 		imageSrc: "http://3.bp.blogspot.com/-oLKvUEgLnkE/T0QPWmhuSrI/AAAAAAAAARI/G0usK7iebWc/s1600/fantasy_art_scenery_wallpaper_ognian_bonev_02.jpg",
 		text: "Draw a card whenever you play a creature",
@@ -122,6 +131,7 @@ const cards = [
 		cost: 3, 
 		type: 'Spell', 
 		text: "Deal 4 damage to target enemy",
+		targets: 1,
 		keywords: [],
 		imageSrc: "https://hearthstone.gamepedia.com/media/hearthstone.gamepedia.com/thumb/c/cf/Lava_Burst_full.jpg/498px-Lava_Burst_full.jpg?version=c14e366de641391b7772f3b3cc167afe",
 		effect: (game, caster, targets) => {
@@ -136,6 +146,7 @@ const cards = [
 		name: 'Soul Drain', 
 		cost: 3, 
 		type: 'Spell', 
+		targets: 1,
 		text: "Deal 3 damage to target enemy. Gain 3 life.",
 		imageSrc: "https://hearthstone.gamepedia.com/media/hearthstone.gamepedia.com/thumb/c/cf/Lava_Burst_full.jpg/498px-Lava_Burst_full.jpg?version=c14e366de641391b7772f3b3cc167afe",
 		effect: (game, caster, targets) => {
@@ -153,6 +164,7 @@ const cards = [
 		cost: 3,
 		type: 'Spell',
 		text: 'Draw two cards',
+		targets: 0,
 		keywords: [],
 		imageSrc: "http://i0.kym-cdn.com/entries/icons/mobile/000/022/266/brain.jpg",
 		effect: (game, caster) => {
@@ -165,6 +177,7 @@ const cards = [
 		cost: 2, 
 		type: 'Spell',
 		text: 'Put a copy of target creature in to your hand. It costs only one mana to cast.',
+		targets: 1,
 		keywords: [],
 		imageSrc: "http://uforeview.tripod.com/cjimages/teleportation.jpg",
 		effect: (game, caster, targets) => {
@@ -184,6 +197,7 @@ const cards = [
 		toughness: 1,
 		type: 'Creature',
 		text: 'Gains +1 / +1 when it kills a creature',
+		targets: 0,
 		keywords: [],
 		imageSrc: "http://i.imgur.com/Ljg8f4W.png",
 		eventListeners: [{
@@ -205,6 +219,7 @@ const cards = [
 		toughness: 2,
 		type: 'Creature',
 		text: 'Whenever a creature dies deal 2 damage to your opponent',
+		targets: 0,
 		keywords: [],
 		imageSrc: "https://vignette2.wikia.nocookie.net/dragonsdogmaquest/images/d/dd/Skeleton-sorcerer.jpg/revision/latest?cb=20140808082339",
 		eventListeners: [{
@@ -222,6 +237,7 @@ const cards = [
 		power: 1,
 		toughness: 4,
 		type: 'Creature',
+		targets: 0,
 		keywords: [],
 		text: 'Whenever Bone Cannon kills a minion deal 2 damage to your opponent',
 		imageSrc: "https://vignette2.wikia.nocookie.net/dragonsdogmaquest/images/d/dd/Skeleton-sorcerer.jpg/revision/latest?cb=20140808082339",
