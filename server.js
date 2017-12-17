@@ -42,8 +42,9 @@ io.on('connection', function(socket) {
 		// games[0].removePlayer(socket.id)
 		// emitGameState(game);
 	});
+
 	
-	socket.on('playCard', (card, pos) => {
+	socket.on('playCard', (card, pos, targets = []) => {
 		const game = games.find(g => g.players[0].id === socket.id || g.players[1].id === socket.id);
 		const player = game.getPlayer(socket.id);
 		
@@ -62,7 +63,9 @@ io.on('connection', function(socket) {
 			return;
 		}
 
-		game.playCard(socket.id, card, pos)
+											// this special param allows both old and new targetting systems to co-exist ... should be temporary
+		game.playCard(socket.id, card, pos, targets.length === 0 ? [player.target] : targets) 
+
 		emitGameState(game);
 	});
 

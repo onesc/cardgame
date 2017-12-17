@@ -33,10 +33,8 @@ const cards = [
 		text: "Return target creature to its owners hand",
 		keywords: [],
 		imageSrc: "https://hearthstone.gamepedia.com/media/hearthstone.gamepedia.com/thumb/d/de/Arcane_Explosion_full.jpg/500px-Arcane_Explosion_full.jpg?version=30063a3f70632fad015cf27e27f9b5e3",
-		effect: (game, caster) => {
-			if (caster.target.type === "Creature") {
-				game.bounceCreature(caster.target.id);
-			}
+		effect: (game, caster, targets) => {
+			game.bounceCreature(targets[0].id);
 		}
 	},
 	{
@@ -126,14 +124,11 @@ const cards = [
 		text: "Deal 4 damage to target enemy",
 		keywords: [],
 		imageSrc: "https://hearthstone.gamepedia.com/media/hearthstone.gamepedia.com/thumb/c/cf/Lava_Burst_full.jpg/498px-Lava_Burst_full.jpg?version=c14e366de641391b7772f3b3cc167afe",
-		effect: (game, caster) => {
-			if (caster.target === null) {
-				var opponent = game.getOpponent(caster.id);
-				game.damagePlayer(opponent.id, 4, {name: 'Lava Strike', type: 'Spell'});
-			} else if (caster.target.type === "Player") {
-			 	game.damagePlayer(caster.target.id, 4), {name: 'Lava Strike', type: 'Spell'};
-			} else if (caster.target.type === "Creature") {
-				game.damageCreature(caster.target, 4, {name: 'Lava Strike', type: 'Spell'})
+		effect: (game, caster, targets) => {
+			if (targets[0].type === "Player") {
+			 	game.damagePlayer(targets[0].id, 4), {name: 'Lava Strike', type: 'Spell'};
+			} else if (targets[0].type === "Creature") {
+				game.damageCreature(targets[0], 4, {name: 'Lava Strike', type: 'Spell'})
 			}		
 		}
 	},
@@ -143,12 +138,11 @@ const cards = [
 		type: 'Spell', 
 		text: "Deal 3 damage to target enemy. Gain 3 life.",
 		imageSrc: "https://hearthstone.gamepedia.com/media/hearthstone.gamepedia.com/thumb/c/cf/Lava_Burst_full.jpg/498px-Lava_Burst_full.jpg?version=c14e366de641391b7772f3b3cc167afe",
-		effect: (game, caster) => {
-			if (caster.target === null || caster.target.type === "Player") {
-				var opponent = game.getOpponent(caster.id);
-				game.damagePlayer(opponent.id, 3, {name: 'Soul Drain', type: 'Spell'});
-			} else if (caster.target.type === "Creature") {
-				game.damageCreature(caster.target, 3, {name: 'Soul Drain', type: 'Spell'})
+		effect: (game, caster, targets) => {
+			if (targets[0].type === "Player") {
+				game.damagePlayer(targets[0].id, 3, {name: 'Soul Drain', type: 'Spell'});
+			} else if (targets[0].type === "Creature") {
+				game.damageCreature(targets[0], 3, {name: 'Soul Drain', type: 'Spell'})
 			}
 
 			game.damagePlayer(caster.id, -3, {name: 'Soul Drain', type: 'Spell'})
@@ -173,9 +167,9 @@ const cards = [
 		text: 'Put a copy of target creature in to your hand. It costs only one mana to cast.',
 		keywords: [],
 		imageSrc: "http://uforeview.tripod.com/cjimages/teleportation.jpg",
-		effect: (game, caster) => {
-			if (caster.target.type === "Creature") {
-				let newCard = Object.assign({}, caster.target.origin)
+		effect: (game, caster, targets) => {
+			if (targets[0].type === "Creature") {
+				let newCard = Object.assign({}, targets[0].origin)
 				newCard.cost = 1;
 				newCard.id = game.newCardID;
 				caster.hand.push(newCard);

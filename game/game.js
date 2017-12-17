@@ -75,9 +75,13 @@ class Game {
 		if (this.players.length === 2) {
 			this.players[0].init();
 			this.players[1].init();
+			this.players[0].target = this.players[1];
+			this.players[1].target = this.players[0];
+
 			this.phase = "first_main"
 			this.currentPlayer = this.players[0];
 			this.log = ["Welcome to the realm"];
+
 
 			if (this.players[0].name === this.players[1].name) {
 				this.players[1].name = this.players[1].name + " The Second"
@@ -94,7 +98,7 @@ class Game {
 		this.players = this.players.filter(p => p.id !== id);
 	}
 
-	playCard(playerID, cardID, pos) {
+	playCard(playerID, cardID, pos, targets = []) {
 		const player = this.getPlayer(playerID);
 		const card = player.hand.find(c => c.id === cardID);
 		if (card.cost > player.currentMana) { return }
@@ -118,7 +122,7 @@ class Game {
 
 
 		if (card.type === "Spell") {
-			card.effect(this, player);
+			card.effect(this, player, targets);
 		}
 		
 		player.hand = player.hand.filter(c => c.id !== cardID);
@@ -190,9 +194,9 @@ class Game {
 	}
 
 	creatureAttack(attackingCreature, defendingCreature) {
-		const supportBuff = this.currentPlayer.board.defend  
+		const supportBuff = (this.currentPlayer.board.defend  
 							&& this.currentPlayer.board.defend.id === attackingCreature.id 
-							&& this.currentPlayer.board.support ? 
+							&& this.currentPlayer.board.support) ? 
 							this.currentPlayer.board.support.power : 0;
 
 		this.damageCreature(defendingCreature, attackingCreature.power + supportBuff, attackingCreature);
