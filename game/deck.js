@@ -107,6 +107,17 @@ const cards = [
 		imageSrc: "https://ih1.redbubble.net/image.120538650.5332/flat,800x800,075,f.jpg"
 	},
 	{
+		name: 'Warbone Crusader', 
+		cost: 4, 
+		type: 'Creature', 
+		text: "",
+		targets: 0,
+		keywords: [],
+		power: 3, 
+		toughness: 4,
+		imageSrc: "https://orig00.deviantart.net/9ba0/f/2015/187/1/3/skeleton_general_by_atom95-d908h5l.jpg"
+	},
+	{
 		name: "Arcane Menagerie",
 		cost: 3,
 		type: "Creature",
