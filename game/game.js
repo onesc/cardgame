@@ -163,11 +163,12 @@ class Game {
 	}
 
 	damageCreature(creature, damage, source) {
-		creature.toughness -= damage;
-		this.log.push(`${source.name} deals ${damage} damage to ${creature.name}`);
+		const realCreature = this.getCreature(creature.id)
+		realCreature.toughness -= damage;
+		this.log.push(`${source.name} deals ${damage} damage to ${realCreature.name}`);
 
 		if (creature.toughness <= 0) { 
-			this.killCreature(creature, source);
+			this.killCreature(realCreature, source);
 		}
 	}
 
