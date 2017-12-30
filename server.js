@@ -63,8 +63,7 @@ io.on('connection', function(socket) {
 			return;
 		}
 
-											// this special param allows both old and new targetting systems to co-exist ... should be temporary
-		game.playCard(socket.id, card, pos, targets.length === 0 ? [player.target] : targets) 
+		game.playCard(socket.id, card, pos, targets) 
 
 		emitGameState(game);
 	});
@@ -92,6 +91,6 @@ io.on('connection', function(socket) {
 });
 
 
-http.listen(8080, function() {
+http.listen(80, function() {
    console.log('listening on localhost:8080');
 });
