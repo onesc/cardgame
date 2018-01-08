@@ -167,7 +167,7 @@ class Game {
 		realCreature.toughness -= damage;
 		this.log.push(`${source.name} deals ${damage} damage to ${realCreature.name}`);
 
-		if (creature.toughness <= 0) { 
+		if (realCreature.toughness <= 0) { 
 			this.killCreature(realCreature, source);
 		}
 	}
