@@ -1,6 +1,6 @@
 var Player = require('./player.js')
 
-let id = 0;
+let gameID = 0;
 
 class Game {
 	constructor() {
@@ -9,8 +9,8 @@ class Game {
 		this.log = [];
 		this.nextCombatDisabled = false;
 		this.newCardID = 1000;
-		this.id = id;
-		id = id + 1;
+		this.id = gameID;
+		gameID = gameID + 1;
 	}
 
 	broadcastEvent(event) { // TEST THIS
@@ -45,9 +45,6 @@ class Game {
 		    	this.phase = "second_main"
 		        break;
 		    case "second_main":
-		    	this.phase = "end"
-		        break;
-		    case "end":
 		    	this.phase = "draw"
 		    	this.currentPlayer = this.currentPlayer.id === this.players[0].id ? this.players[1] : this.players[0];
 		        break;
