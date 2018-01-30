@@ -180,8 +180,13 @@ class Game {
 
 	setTarget(playerID, target) {
 		const player = this.getPlayer(playerID);
-		const realTarget = target.type === "Creature" ? this.players[0].board.getCreature(target.id) || this.players[1].board.getCreature(target.id) : this.getPlayer(target.id);
-		player.target = realTarget;
+		const opponent = this.getOpponent(playerID);
+		const realTarget = target.type === "Creature" ? opponent.board.getCreature(target.id) : opponent;
+		if (realTarget) { 
+			player.target = realTarget; 
+		} else { 
+			console.error(playerID + " tried to select an invalid target: " + target)
+		}
 	}
 
 	playerDraw(playerID) {
